@@ -33,8 +33,11 @@ import eu.cdevreeze.xbrl4j.model.xs.SchemaElement;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static eu.cdevreeze.xbrl4j.model.Names.*;
 
@@ -46,6 +49,12 @@ import static eu.cdevreeze.xbrl4j.model.Names.*;
 public class XmlElementFactory {
 
     private final SchemaContext schemaContext;
+
+    private final Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> schemaElementCreators =
+            createSchemaElementCreatorMap();
+
+    private final Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> linkElementCreators =
+            createLinkElementCreatorMap();
 
     public XmlElementFactory(SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
@@ -77,42 +86,9 @@ public class XmlElementFactory {
 
     public Optional<SchemaElement> optionallyCreateSchemaElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         if (underlyingElement.elementName().getNamespaceURI().equals(XS_NS)) {
-            return switch (underlyingElement.elementName().getLocalPart()) {
-                case "element" -> Optional.of(
-                        new ElementDeclarationImpl(underlyingElement, this::createXmlElement)
-                );
-                case "attribute" -> Optional.of(
-                        new AttributeDeclarationImpl(underlyingElement, this::createXmlElement)
-                );
-                case "group" -> Optional.of(
-                        new GroupImpl(underlyingElement, this::createXmlElement)
-                );
-                case "attributeGroup" -> Optional.of(
-                        new AttributeGroupImpl(underlyingElement, this::createXmlElement)
-                );
-                case "annotation" -> Optional.of(
-                        new AnnotationSchemaElementImpl(underlyingElement, this::createXmlElement)
-                );
-                case "appinfo" -> Optional.of(
-                        new AppInfoImpl(underlyingElement, this::createXmlElement)
-                );
-                case "schema" -> Optional.of(
-                        new SchemaImpl(underlyingElement, this::createXmlElement)
-                );
-                case "complexType" -> Optional.of(
-                        new ComplexTypeImpl(underlyingElement, this::createXmlElement)
-                );
-                case "simpleType" -> Optional.of(
-                        new SimpleTypeImpl(underlyingElement, this::createXmlElement)
-                );
-                case "import" -> Optional.of(
-                        new ImportImpl(underlyingElement, this::createXmlElement)
-                );
-                case "include" -> Optional.of(
-                        new IncludeImpl(underlyingElement, this::createXmlElement)
-                );
-                default -> Optional.of(new OtherSchemaElementImpl(underlyingElement, this::createXmlElement));
-            };
+            return Optional.ofNullable(schemaElementCreators.get(underlyingElement.elementName()))
+                    .map(f -> f.apply(underlyingElement))
+                    .or(() -> Optional.of(new OtherSchemaElementImpl(underlyingElement, this::createXmlElement)));
         } else {
             return Optional.empty();
         }
@@ -126,87 +102,9 @@ public class XmlElementFactory {
         } else {
             QName name = sgOrSelfOption.orElseThrow();
 
-            return switch (name.getLocalPart()) {
-                case "loc" -> Optional.of(
-                        new LocImpl(underlyingElement, this::createXmlElement)
-                );
-                case "definitionArc" -> Optional.of(
-                        new DefinitionArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "presentationArc" -> Optional.of(
-                        new PresentationArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "calculationArc" -> Optional.of(
-                        new CalculationArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "labelArc" -> Optional.of(
-                        new LabelArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "referenceArc" -> Optional.of(
-                        new ReferenceArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "footnoteArc" -> Optional.of(
-                        new FootnoteArcImpl(underlyingElement, this::createXmlElement)
-                );
-                case "definitionLink" -> Optional.of(
-                        new DefinitionLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "presentationLink" -> Optional.of(
-                        new PresentationLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "calculationLink" -> Optional.of(
-                        new CalculationLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "labelLink" -> Optional.of(
-                        new LabelLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "referenceLink" -> Optional.of(
-                        new ReferenceLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "footnoteLink" -> Optional.of(
-                        new FootnoteLinkImpl(underlyingElement, this::createXmlElement)
-                );
-                case "label" -> Optional.of(
-                        new LabelImpl(underlyingElement, this::createXmlElement)
-                );
-                case "reference" -> Optional.of(
-                        new ReferenceImpl(underlyingElement, this::createXmlElement)
-                );
-                case "footnote" -> Optional.of(
-                        new FootnoteImpl(underlyingElement, this::createXmlElement)
-                );
-                case "linkbase" -> Optional.of(
-                        new LinkbaseImpl(underlyingElement, this::createXmlElement)
-                );
-                case "arcroleRef" -> Optional.of(
-                        new ArcroleRefImpl(underlyingElement, this::createXmlElement)
-                );
-                case "roleRef" -> Optional.of(
-                        new RoleRefImpl(underlyingElement, this::createXmlElement)
-                );
-                case "linkbaseRef" -> Optional.of(
-                        new LinkbaseRefImpl(underlyingElement, this::createXmlElement)
-                );
-                case "schemaRef" -> Optional.of(
-                        new SchemaRefImpl(underlyingElement, this::createXmlElement)
-                );
-                case "arcroleType" -> Optional.of(
-                        new ArcroleTypeImpl(underlyingElement, this::createXmlElement)
-                );
-                case "roleType" -> Optional.of(
-                        new RoleTypeImpl(underlyingElement, this::createXmlElement)
-                );
-                case "definition" -> Optional.of(
-                        new DefinitionImpl(underlyingElement, this::createXmlElement)
-                );
-                case "part" -> Optional.of(
-                        new PartImpl(underlyingElement, this::createXmlElement)
-                );
-                case "usedOn" -> Optional.of(
-                        new UsedOnImpl(underlyingElement, this::createXmlElement)
-                );
-                default -> Optional.of(new OtherLinkElementImpl(underlyingElement, this::createXmlElement));
-            };
+            return Optional.ofNullable(linkElementCreators.get(name))
+                    .map(f -> f.apply(underlyingElement))
+                    .or(() -> Optional.of(new OtherLinkElementImpl(underlyingElement, this::createXmlElement)));
         }
     }
 
@@ -266,5 +164,52 @@ public class XmlElementFactory {
                     new OtherXlResourceImpl(underlyingElement, this::createXmlElement)
             );
         }
+    }
+
+    private Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
+        Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> result = new HashMap<>();
+        result.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
+        result.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
+        result.put(XS_GROUP_QNAME, e -> new GroupImpl(e, this::createXmlElement));
+        result.put(XS_ATTRIBUTE_GROUP_QNAME, e -> new AttributeGroupImpl(e, this::createXmlElement));
+        result.put(XS_ANNOTATION_QNAME, e -> new AnnotationSchemaElementImpl(e, this::createXmlElement));
+        result.put(XS_APPINFO_QNAME, e -> new AppInfoImpl(e, this::createXmlElement));
+        result.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
+        result.put(XS_COMPLEX_TYPE_QNAME, e -> new ComplexTypeImpl(e, this::createXmlElement));
+        result.put(XS_SIMPLE_TYPE_QNAME, e -> new SimpleTypeImpl(e, this::createXmlElement));
+        result.put(XS_IMPORT_QNAME, e -> new ImportImpl(e, this::createXmlElement));
+        result.put(XS_INCLUDE_QNAME, e -> new IncludeImpl(e, this::createXmlElement));
+        return result;
+    }
+
+    private Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> createLinkElementCreatorMap() {
+        Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> result = new HashMap<>();
+        result.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
+        result.put(LINK_ARCROLE_TYPE_QNAME, e -> new ArcroleTypeImpl(e, this::createXmlElement));
+        result.put(LINK_CALCULATION_ARC_QNAME, e -> new CalculationArcImpl(e, this::createXmlElement));
+        result.put(LINK_CALCULATION_LINK_QNAME, e -> new CalculationLinkImpl(e, this::createXmlElement));
+        result.put(LINK_DEFINITION_QNAME, e -> new DefinitionImpl(e, this::createXmlElement));
+        result.put(LINK_DEFINITION_ARC_QNAME, e -> new DefinitionArcImpl(e, this::createXmlElement));
+        result.put(LINK_DEFINITION_LINK_QNAME, e -> new DefinitionLinkImpl(e, this::createXmlElement));
+        result.put(LINK_FOOTNOTE_QNAME, e -> new FootnoteImpl(e, this::createXmlElement));
+        result.put(LINK_FOOTNOTE_ARC_QNAME, e -> new FootnoteArcImpl(e, this::createXmlElement));
+        result.put(LINK_FOOTNOTE_LINK_QNAME, e -> new FootnoteLinkImpl(e, this::createXmlElement));
+        result.put(LINK_LABEL_QNAME, e -> new LabelImpl(e, this::createXmlElement));
+        result.put(LINK_LABEL_ARC_QNAME, e -> new LabelArcImpl(e, this::createXmlElement));
+        result.put(LINK_LABEL_LINK_QNAME, e -> new LabelLinkImpl(e, this::createXmlElement));
+        result.put(LINK_LINKBASE_QNAME, e -> new LinkbaseImpl(e, this::createXmlElement));
+        result.put(LINK_LINKBASE_REF_QNAME, e -> new LinkbaseRefImpl(e, this::createXmlElement));
+        result.put(LINK_LOC_QNAME, e -> new LocImpl(e, this::createXmlElement));
+        result.put(LINK_PART_QNAME, e -> new PartImpl(e, this::createXmlElement));
+        result.put(LINK_PRESENTATION_ARC_QNAME, e -> new PresentationArcImpl(e, this::createXmlElement));
+        result.put(LINK_PRESENTATION_LINK_QNAME, e -> new PresentationLinkImpl(e, this::createXmlElement));
+        result.put(LINK_REFERENCE_QNAME, e -> new ReferenceImpl(e, this::createXmlElement));
+        result.put(LINK_REFERENCE_ARC_QNAME, e -> new ReferenceArcImpl(e, this::createXmlElement));
+        result.put(LINK_REFERENCE_LINK_QNAME, e -> new ReferenceLinkImpl(e, this::createXmlElement));
+        result.put(LINK_ROLE_REF_QNAME, e -> new RoleRefImpl(e, this::createXmlElement));
+        result.put(LINK_ROLE_TYPE_QNAME, e -> new RoleTypeImpl(e, this::createXmlElement));
+        result.put(LINK_SCHEMA_REF_QNAME, e -> new SchemaRefImpl(e, this::createXmlElement));
+        result.put(LINK_USED_ON_QNAME, e -> new UsedOnImpl(e, this::createXmlElement));
+        return result;
     }
 }

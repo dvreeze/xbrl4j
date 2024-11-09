@@ -50,7 +50,32 @@ public class Names {
     public static final QName XS_IMPORT_QNAME = new QName(XS_NS, "import");
     public static final QName XS_INCLUDE_QNAME = new QName(XS_NS, "include");
 
+    public static final QName LINK_ARCROLE_REF_QNAME = new QName(LINK_NS, "arcroleRef");
+    public static final QName LINK_ARCROLE_TYPE_QNAME = new QName(LINK_NS, "arcroleType");
+    public static final QName LINK_CALCULATION_ARC_QNAME = new QName(LINK_NS, "calculationArc");
+    public static final QName LINK_CALCULATION_LINK_QNAME = new QName(LINK_NS, "calculationLink");
+    public static final QName LINK_DEFINITION_QNAME = new QName(LINK_NS, "definition");
+    public static final QName LINK_DEFINITION_ARC_QNAME = new QName(LINK_NS, "definitionArc");
+    public static final QName LINK_DEFINITION_LINK_QNAME = new QName(LINK_NS, "definitionLink");
+    public static final QName LINK_FOOTNOTE_QNAME = new QName(LINK_NS, "footnote");
+    public static final QName LINK_FOOTNOTE_ARC_QNAME = new QName(LINK_NS, "footnoteArc");
+    public static final QName LINK_FOOTNOTE_LINK_QNAME = new QName(LINK_NS, "footnoteLink");
+    public static final QName LINK_LABEL_QNAME = new QName(LINK_NS, "label");
+    public static final QName LINK_LABEL_ARC_QNAME = new QName(LINK_NS, "labelArc");
+    public static final QName LINK_LABEL_LINK_QNAME = new QName(LINK_NS, "labelLink");
+    public static final QName LINK_LINKBASE_QNAME = new QName(LINK_NS, "linkbase");
+    public static final QName LINK_LINKBASE_REF_QNAME = new QName(LINK_NS, "linkbaseRef");
+    public static final QName LINK_LOC_QNAME = new QName(LINK_NS, "loc");
     public static final QName LINK_PART_QNAME = new QName(LINK_NS, "part");
+    public static final QName LINK_PRESENTATION_ARC_QNAME = new QName(LINK_NS, "presentationArc");
+    public static final QName LINK_PRESENTATION_LINK_QNAME = new QName(LINK_NS, "presentationLink");
+    public static final QName LINK_REFERENCE_QNAME = new QName(LINK_NS, "reference");
+    public static final QName LINK_REFERENCE_ARC_QNAME = new QName(LINK_NS, "referenceArc");
+    public static final QName LINK_REFERENCE_LINK_QNAME = new QName(LINK_NS, "referenceLink");
+    public static final QName LINK_ROLE_REF_QNAME = new QName(LINK_NS, "roleRef");
+    public static final QName LINK_ROLE_TYPE_QNAME = new QName(LINK_NS, "roleType");
+    public static final QName LINK_SCHEMA_REF_QNAME = new QName(LINK_NS, "schemaRef");
+    public static final QName LINK_USED_ON_QNAME = new QName(LINK_NS, "usedOn");
 
     public static final QName GEN_ARC_QNAME = new QName(GEN_NS, "arc");
     public static final QName GEN_LINK_QNAME = new QName(GEN_NS, "link");
