@@ -19,16 +19,16 @@
  * (or typically creating an instance of a subtype) should never fail, and that the
  * ElementApi methods of XmlElement should never fail either. As a consequence, the XmlElement
  * API is always useful while validating a potentially incorrect instance or taxonomy document, as long
- * as we stay away from some methods outside the ElementApi part.
+ * as (during validation) we stay away from some methods outside the ElementApi part.
  * <p>
  * Implementations should be immutable and thread-safe.
  * <p>
- * The XML element type hierarchy follows the corresponding XML schemas, in particular with respect
+ * The XML element type hierarchy follows the corresponding "core" XML schemas, in particular with respect
  * to substitution groups. That also implies that there is no hard separation between taxonomy elements
  * and instance elements. After all, footnote links and presentation links are both XLink extended
  * links, so they share at least that "ancestry". The subpackage names are organized according to
- * preferred prefixes of the target namespaces of the corresponding schemas. Substitution group membership
- * is represented by interface inheritance.
+ * preferred prefixes of the target namespaces of the corresponding core schemas. Substitution group membership
+ * (within the core XBRL schemas) is represented by interface inheritance.
  *
  * @author Chris de Vreeze
  */
