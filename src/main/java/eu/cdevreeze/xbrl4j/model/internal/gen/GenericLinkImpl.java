@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.internal.link;
+package eu.cdevreeze.xbrl4j.model.internal.gen;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
+import eu.cdevreeze.xbrl4j.model.gen.GenericArc;
+import eu.cdevreeze.xbrl4j.model.gen.GenericLink;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
-import eu.cdevreeze.xbrl4j.model.link.Footnote;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteArc;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteLink;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
+import eu.cdevreeze.xbrl4j.model.xl.XlResource;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
@@ -33,13 +33,13 @@ import java.util.function.Function;
 import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
 /**
- * Implementation of FootnoteLink.
+ * Implementation of GenericLink.
  *
  * @author Chris de Vreeze
  */
-public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
+public class GenericLinkImpl extends XmlElementImpl implements GenericLink {
 
-    public FootnoteLinkImpl(
+    public GenericLinkImpl(
             AncestryAwareElementApi<?> underlyingElement,
             Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
@@ -77,13 +77,13 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
     }
 
     @Override
-    public ImmutableList<? extends FootnoteArc> arcs() {
-        return childElementStream(FootnoteArc.class).collect(ImmutableList.toImmutableList());
+    public ImmutableList<? extends GenericArc> arcs() {
+        return childElementStream(GenericArc.class).collect(ImmutableList.toImmutableList());
     }
 
     @Override
-    public ImmutableList<? extends Footnote> resources() {
-        return childElementStream(Footnote.class).collect(ImmutableList.toImmutableList());
+    public ImmutableList<? extends XlResource> resources() {
+        return childElementStream(XlResource.class).collect(ImmutableList.toImmutableList());
     }
 
     @Override

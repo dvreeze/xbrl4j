@@ -81,7 +81,6 @@ public class LabelLinkImpl extends XmlElementImpl implements LabelLink {
         return childElementStream(LabelArc.class).collect(ImmutableList.toImmutableList());
     }
 
-    // Should be empty
     @Override
     public ImmutableList<? extends Label> resources() {
         return childElementStream(Label.class).collect(ImmutableList.toImmutableList());

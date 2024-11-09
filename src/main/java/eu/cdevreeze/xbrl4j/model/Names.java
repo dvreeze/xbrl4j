@@ -81,6 +81,7 @@ public class Names {
     public static final QName GEN_LINK_QNAME = new QName(GEN_NS, "link");
 
     public static final QName LABEL_LABEL_QNAME = new QName(LABEL_NS, "label");
+
     public static final QName REFERENCE_REFERENCE_QNAME = new QName(REFERENCE_NS, "reference");
 
     public static final QName XL_ARC_QNAME = new QName(XL_NS, "arc");

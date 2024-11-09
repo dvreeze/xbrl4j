@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.internal.link;
+package eu.cdevreeze.xbrl4j.model.internal.gen;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
+import eu.cdevreeze.xbrl4j.model.gen.GenericArc;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
-import eu.cdevreeze.xbrl4j.model.link.Footnote;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteArc;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteLink;
-import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
+import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Function;
 
 import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
 /**
- * Implementation of FootnoteLink.
+ * Implementation of GenericArc.
  *
  * @author Chris de Vreeze
  */
-public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
+public class GenericArcImpl extends XmlElementImpl implements GenericArc {
 
-    public FootnoteLinkImpl(
+    public GenericArcImpl(
             AncestryAwareElementApi<?> underlyingElement,
             Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
@@ -48,12 +47,26 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
 
     @Override
     public XLinkType xlinkType() {
-        return XLinkType.EXTENDED;
+        return XLinkType.ARC;
+    }
+
+    public String id() {
+        return attribute(ID_QNAME);
     }
 
     @Override
-    public String role() {
-        return XLinkSupport.roleOption(underlyingElement()).orElseThrow();
+    public String from() {
+        return XLinkSupport.from(underlyingElement());
+    }
+
+    @Override
+    public String to() {
+        return XLinkSupport.to(underlyingElement());
+    }
+
+    @Override
+    public String arcrole() {
+        return XLinkSupport.arcroleOption(underlyingElement()).orElseThrow();
     }
 
     @Override
@@ -62,8 +75,28 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
     }
 
     @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
+    public Optional<Show> showOption() {
+        return XLinkSupport.showOption(underlyingElement());
+    }
+
+    @Override
+    public Optional<Actuate> actuateOption() {
+        return XLinkSupport.actuateOption(underlyingElement());
+    }
+
+    @Override
+    public Optional<BigDecimal> orderOption() {
+        return XLinkSupport.orderOption(underlyingElement());
+    }
+
+    @Override
+    public Optional<Use> useOption() {
+        return XLinkSupport.useOption(underlyingElement());
+    }
+
+    @Override
+    public OptionalInt priorityOption() {
+        return XLinkSupport.priorityOption(underlyingElement());
     }
 
     @Override
@@ -72,22 +105,7 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
     }
 
     @Override
-    public ImmutableList<? extends Loc> locators() {
-        return childElementStream(Loc.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public ImmutableList<? extends FootnoteArc> arcs() {
-        return childElementStream(FootnoteArc.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public ImmutableList<? extends Footnote> resources() {
-        return childElementStream(Footnote.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
     public Optional<XLinkType> xlinkTypeOption() {
-        return Optional.of(xlinkType());
+        return XLinkSupport.xlinkTypeOption(underlyingElement());
     }
 }

@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.internal.link;
+package eu.cdevreeze.xbrl4j.model.internal.reference;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
-import eu.cdevreeze.xbrl4j.model.link.Footnote;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteArc;
-import eu.cdevreeze.xbrl4j.model.link.FootnoteLink;
-import eu.cdevreeze.xbrl4j.model.link.Loc;
-import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
+import eu.cdevreeze.xbrl4j.model.link.Part;
+import eu.cdevreeze.xbrl4j.model.reference.GenericReference;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
@@ -33,13 +30,13 @@ import java.util.function.Function;
 import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
 /**
- * Implementation of FootnoteLink.
+ * Implementation of GenericReference.
  *
  * @author Chris de Vreeze
  */
-public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
+public class GenericReferenceImpl extends XmlElementImpl implements GenericReference {
 
-    public FootnoteLinkImpl(
+    public GenericReferenceImpl(
             AncestryAwareElementApi<?> underlyingElement,
             Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
@@ -48,12 +45,17 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
 
     @Override
     public XLinkType xlinkType() {
-        return XLinkType.EXTENDED;
+        return XLinkType.RESOURCE;
     }
 
     @Override
-    public String role() {
-        return XLinkSupport.roleOption(underlyingElement()).orElseThrow();
+    public String label() {
+        return XLinkSupport.label(underlyingElement());
+    }
+
+    @Override
+    public Optional<String> roleOption() {
+        return XLinkSupport.roleOption(underlyingElement());
     }
 
     @Override
@@ -67,27 +69,12 @@ public class FootnoteLinkImpl extends XmlElementImpl implements FootnoteLink {
     }
 
     @Override
-    public ImmutableList<? extends XlTitle> titleElements() {
-        return childElementStream(XlTitle.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public ImmutableList<? extends Loc> locators() {
-        return childElementStream(Loc.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public ImmutableList<? extends FootnoteArc> arcs() {
-        return childElementStream(FootnoteArc.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public ImmutableList<? extends Footnote> resources() {
-        return childElementStream(Footnote.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
     public Optional<XLinkType> xlinkTypeOption() {
         return Optional.of(xlinkType());
+    }
+
+    @Override
+    public ImmutableList<? extends Part> parts() {
+        return childElementStream(Part.class).collect(ImmutableList.toImmutableList());
     }
 }

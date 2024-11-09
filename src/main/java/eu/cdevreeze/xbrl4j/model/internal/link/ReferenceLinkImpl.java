@@ -81,7 +81,6 @@ public class ReferenceLinkImpl extends XmlElementImpl implements ReferenceLink {
         return childElementStream(ReferenceArc.class).collect(ImmutableList.toImmutableList());
     }
 
-    // Should be empty
     @Override
     public ImmutableList<? extends Reference> resources() {
         return childElementStream(Reference.class).collect(ImmutableList.toImmutableList());
