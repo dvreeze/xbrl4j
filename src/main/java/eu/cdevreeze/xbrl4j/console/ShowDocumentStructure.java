@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Objects;
 
-import static eu.cdevreeze.xbrl4j.model.Names.*;
+import static eu.cdevreeze.xbrl4j.model.Names.XL_RESOURCE_QNAME;
 
 /**
  * Shows the structure of the given taxonomy document, given as URI program argument.
@@ -48,7 +48,11 @@ public class ShowDocumentStructure {
         URI docUri = URI.create(args[0]);
 
         Document doc = Document.from(DocumentParsers.instance().parse(docUri));
-        SchemaContext schemaContext = createSchemaContext();
+        SchemaContext schemaContext = SchemaContext.defaultInstance()
+                .plus(
+                        new QName("http://www.nltaxonomie.nl/2011/xbrl/xbrl-syntax-extension", "linkroleOrder"),
+                        XL_RESOURCE_QNAME
+                );
         XmlElementFactory xmlElementFactory = new XmlElementFactory(schemaContext);
         XmlElement xmlElement = xmlElementFactory.createXmlElement(doc.documentElement());
 
@@ -79,36 +83,5 @@ public class ShowDocumentStructure {
         builder.put(new QName("className"), className);
         builder.putAll(attrs);
         return builder.build();
-    }
-
-    private static SchemaContext createSchemaContext() {
-        ImmutableMap.Builder<QName, QName> schemaContextBuilder = ImmutableMap.builder();
-        schemaContextBuilder.put(GEN_ARC_QNAME, XL_ARC_QNAME);
-        schemaContextBuilder.put(GEN_LINK_QNAME, XL_EXTENDED_QNAME);
-        schemaContextBuilder.put(LABEL_LABEL_QNAME, XL_RESOURCE_QNAME);
-        schemaContextBuilder.put(REFERENCE_REFERENCE_QNAME, XL_RESOURCE_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Publisher"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Name"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Number"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "IssueDate"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Chapter"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Article"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Note"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Section"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Subsection"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Paragraph"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Subparagraph"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Clause"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Subclause"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Appendix"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Example"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Page"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Exhibit"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Footnote"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "Sentence"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "URI"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName(REF_NS, "URIDate"), LINK_PART_QNAME);
-        schemaContextBuilder.put(new QName("http://www.nltaxonomie.nl/2011/xbrl/xbrl-syntax-extension", "linkroleOrder"), XL_RESOURCE_QNAME);
-        return new SchemaContext(schemaContextBuilder.build());
     }
 }

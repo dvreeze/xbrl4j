@@ -166,51 +166,51 @@ public class XmlElementFactory {
     }
 
     private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> result =
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> builder =
                 new ImmutableMap.Builder<>();
-        result.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
-        result.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
-        result.put(XS_GROUP_QNAME, e -> new GroupImpl(e, this::createXmlElement));
-        result.put(XS_ATTRIBUTE_GROUP_QNAME, e -> new AttributeGroupImpl(e, this::createXmlElement));
-        result.put(XS_ANNOTATION_QNAME, e -> new AnnotationSchemaElementImpl(e, this::createXmlElement));
-        result.put(XS_APPINFO_QNAME, e -> new AppInfoImpl(e, this::createXmlElement));
-        result.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
-        result.put(XS_COMPLEX_TYPE_QNAME, e -> new ComplexTypeImpl(e, this::createXmlElement));
-        result.put(XS_SIMPLE_TYPE_QNAME, e -> new SimpleTypeImpl(e, this::createXmlElement));
-        result.put(XS_IMPORT_QNAME, e -> new ImportImpl(e, this::createXmlElement));
-        result.put(XS_INCLUDE_QNAME, e -> new IncludeImpl(e, this::createXmlElement));
-        return result.build();
+        builder.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
+        builder.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
+        builder.put(XS_GROUP_QNAME, e -> new GroupImpl(e, this::createXmlElement));
+        builder.put(XS_ATTRIBUTE_GROUP_QNAME, e -> new AttributeGroupImpl(e, this::createXmlElement));
+        builder.put(XS_ANNOTATION_QNAME, e -> new AnnotationSchemaElementImpl(e, this::createXmlElement));
+        builder.put(XS_APPINFO_QNAME, e -> new AppInfoImpl(e, this::createXmlElement));
+        builder.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
+        builder.put(XS_COMPLEX_TYPE_QNAME, e -> new ComplexTypeImpl(e, this::createXmlElement));
+        builder.put(XS_SIMPLE_TYPE_QNAME, e -> new SimpleTypeImpl(e, this::createXmlElement));
+        builder.put(XS_IMPORT_QNAME, e -> new ImportImpl(e, this::createXmlElement));
+        builder.put(XS_INCLUDE_QNAME, e -> new IncludeImpl(e, this::createXmlElement));
+        return builder.build();
     }
 
     private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> createLinkElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, LinkElement>> result =
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, LinkElement>> builder =
                 new ImmutableMap.Builder<>();
-        result.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
-        result.put(LINK_ARCROLE_TYPE_QNAME, e -> new ArcroleTypeImpl(e, this::createXmlElement));
-        result.put(LINK_CALCULATION_ARC_QNAME, e -> new CalculationArcImpl(e, this::createXmlElement));
-        result.put(LINK_CALCULATION_LINK_QNAME, e -> new CalculationLinkImpl(e, this::createXmlElement));
-        result.put(LINK_DEFINITION_QNAME, e -> new DefinitionImpl(e, this::createXmlElement));
-        result.put(LINK_DEFINITION_ARC_QNAME, e -> new DefinitionArcImpl(e, this::createXmlElement));
-        result.put(LINK_DEFINITION_LINK_QNAME, e -> new DefinitionLinkImpl(e, this::createXmlElement));
-        result.put(LINK_FOOTNOTE_QNAME, e -> new FootnoteImpl(e, this::createXmlElement));
-        result.put(LINK_FOOTNOTE_ARC_QNAME, e -> new FootnoteArcImpl(e, this::createXmlElement));
-        result.put(LINK_FOOTNOTE_LINK_QNAME, e -> new FootnoteLinkImpl(e, this::createXmlElement));
-        result.put(LINK_LABEL_QNAME, e -> new LabelImpl(e, this::createXmlElement));
-        result.put(LINK_LABEL_ARC_QNAME, e -> new LabelArcImpl(e, this::createXmlElement));
-        result.put(LINK_LABEL_LINK_QNAME, e -> new LabelLinkImpl(e, this::createXmlElement));
-        result.put(LINK_LINKBASE_QNAME, e -> new LinkbaseImpl(e, this::createXmlElement));
-        result.put(LINK_LINKBASE_REF_QNAME, e -> new LinkbaseRefImpl(e, this::createXmlElement));
-        result.put(LINK_LOC_QNAME, e -> new LocImpl(e, this::createXmlElement));
-        result.put(LINK_PART_QNAME, e -> new PartImpl(e, this::createXmlElement));
-        result.put(LINK_PRESENTATION_ARC_QNAME, e -> new PresentationArcImpl(e, this::createXmlElement));
-        result.put(LINK_PRESENTATION_LINK_QNAME, e -> new PresentationLinkImpl(e, this::createXmlElement));
-        result.put(LINK_REFERENCE_QNAME, e -> new ReferenceImpl(e, this::createXmlElement));
-        result.put(LINK_REFERENCE_ARC_QNAME, e -> new ReferenceArcImpl(e, this::createXmlElement));
-        result.put(LINK_REFERENCE_LINK_QNAME, e -> new ReferenceLinkImpl(e, this::createXmlElement));
-        result.put(LINK_ROLE_REF_QNAME, e -> new RoleRefImpl(e, this::createXmlElement));
-        result.put(LINK_ROLE_TYPE_QNAME, e -> new RoleTypeImpl(e, this::createXmlElement));
-        result.put(LINK_SCHEMA_REF_QNAME, e -> new SchemaRefImpl(e, this::createXmlElement));
-        result.put(LINK_USED_ON_QNAME, e -> new UsedOnImpl(e, this::createXmlElement));
-        return result.build();
+        builder.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
+        builder.put(LINK_ARCROLE_TYPE_QNAME, e -> new ArcroleTypeImpl(e, this::createXmlElement));
+        builder.put(LINK_CALCULATION_ARC_QNAME, e -> new CalculationArcImpl(e, this::createXmlElement));
+        builder.put(LINK_CALCULATION_LINK_QNAME, e -> new CalculationLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_DEFINITION_QNAME, e -> new DefinitionImpl(e, this::createXmlElement));
+        builder.put(LINK_DEFINITION_ARC_QNAME, e -> new DefinitionArcImpl(e, this::createXmlElement));
+        builder.put(LINK_DEFINITION_LINK_QNAME, e -> new DefinitionLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_FOOTNOTE_QNAME, e -> new FootnoteImpl(e, this::createXmlElement));
+        builder.put(LINK_FOOTNOTE_ARC_QNAME, e -> new FootnoteArcImpl(e, this::createXmlElement));
+        builder.put(LINK_FOOTNOTE_LINK_QNAME, e -> new FootnoteLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_QNAME, e -> new LabelImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_ARC_QNAME, e -> new LabelArcImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_LINK_QNAME, e -> new LabelLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_LINKBASE_QNAME, e -> new LinkbaseImpl(e, this::createXmlElement));
+        builder.put(LINK_LINKBASE_REF_QNAME, e -> new LinkbaseRefImpl(e, this::createXmlElement));
+        builder.put(LINK_LOC_QNAME, e -> new LocImpl(e, this::createXmlElement));
+        builder.put(LINK_PART_QNAME, e -> new PartImpl(e, this::createXmlElement));
+        builder.put(LINK_PRESENTATION_ARC_QNAME, e -> new PresentationArcImpl(e, this::createXmlElement));
+        builder.put(LINK_PRESENTATION_LINK_QNAME, e -> new PresentationLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_QNAME, e -> new ReferenceImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_ARC_QNAME, e -> new ReferenceArcImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_LINK_QNAME, e -> new ReferenceLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_ROLE_REF_QNAME, e -> new RoleRefImpl(e, this::createXmlElement));
+        builder.put(LINK_ROLE_TYPE_QNAME, e -> new RoleTypeImpl(e, this::createXmlElement));
+        builder.put(LINK_SCHEMA_REF_QNAME, e -> new SchemaRefImpl(e, this::createXmlElement));
+        builder.put(LINK_USED_ON_QNAME, e -> new UsedOnImpl(e, this::createXmlElement));
+        return builder.build();
     }
 }

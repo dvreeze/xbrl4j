@@ -16,25 +16,53 @@
 
 package eu.cdevreeze.xbrl4j.model.factory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static eu.cdevreeze.xbrl4j.model.Names.*;
 
 /**
  * Needed context from the XML Schema in order to create XmlElement trees.
  *
  * @author Chris de Vreeze
  */
-public record SchemaContext(ImmutableMap<QName, QName> substitutionGroups) {
+public record SchemaContext(ImmutableMap<String, ImmutableMap<QName, QName>> substitutionGroupsByNamespace) {
+
+    public SchemaContext {
+        Preconditions.checkArgument(
+                substitutionGroupsByNamespace.entrySet()
+                        .stream()
+                        .allMatch(
+                                kv -> {
+                                    String namespace = kv.getKey();
+                                    Map<QName, QName> mappings = kv.getValue();
+                                    return mappings.keySet().stream().allMatch(n -> n.getNamespaceURI().equals(namespace));
+                                }
+                        )
+        );
+    }
+
+    public Optional<QName> findDirectSubstitutionGroup(QName elementName) {
+        return Optional.ofNullable(substitutionGroupsByNamespace().get(elementName.getNamespaceURI()))
+                .flatMap(kv -> Optional.ofNullable(kv.get(elementName)));
+    }
 
     public ImmutableSet<QName> findSubstitutionGroups(QName elementName) {
-        if (!substitutionGroups().containsKey(elementName)) {
+        Optional<QName> optionalSubstGroup = findDirectSubstitutionGroup(elementName);
+
+        if (optionalSubstGroup.isEmpty()) {
             return ImmutableSet.of();
         } else {
             ImmutableSet.Builder<QName> setBuilder = ImmutableSet.builder();
-            QName sg = Objects.requireNonNull(substitutionGroups().get(elementName));
+            QName sg = Objects.requireNonNull(optionalSubstGroup.orElseThrow());
             setBuilder.add(sg);
             // Recursion
             setBuilder.addAll(findSubstitutionGroups(sg));
@@ -47,5 +75,78 @@ public record SchemaContext(ImmutableMap<QName, QName> substitutionGroups) {
         setBuilder.add(elementName);
         setBuilder.addAll(findSubstitutionGroups(elementName));
         return setBuilder.build();
+    }
+
+    public ImmutableMap<QName, QName> allSubstitutionGroups() {
+        Map<QName, QName> result = substitutionGroupsByNamespace()
+                .values()
+                .stream()
+                .map(ImmutableMap::entrySet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return ImmutableMap.copyOf(result);
+    }
+
+    public SchemaContext plus(ImmutableMap<QName, QName> otherSubstitutionGroups) {
+        ImmutableMap.Builder<QName, QName> builder = ImmutableMap.builder();
+        builder.putAll(allSubstitutionGroups());
+        builder.putAll(otherSubstitutionGroups);
+        return SchemaContext.from(builder.build());
+    }
+
+    public SchemaContext plus(QName elementName, QName substitutionGroup) {
+        return plus(ImmutableMap.of(elementName, substitutionGroup));
+    }
+
+    public static SchemaContext from(ImmutableMap<QName, QName> substitutionGroups) {
+        Map<String, ImmutableMap<QName, QName>> substitutionGroupsByNamespace =
+                substitutionGroups.entrySet()
+                        .stream()
+                        .collect(
+                                Collectors.groupingBy(
+                                        kv -> kv.getKey().getNamespaceURI(),
+                                        Collectors.collectingAndThen(
+                                                Collectors.toList(),
+                                                ImmutableMap::copyOf
+                                        )
+                                )
+                        );
+        return new SchemaContext(ImmutableMap.copyOf(substitutionGroupsByNamespace));
+    }
+
+    public static SchemaContext defaultInstance() {
+        return defaultInstance;
+    }
+
+    private static final SchemaContext defaultInstance = createDefaultInstance();
+
+    private static SchemaContext createDefaultInstance() {
+        ImmutableMap.Builder<QName, QName> schemaContextBuilder = ImmutableMap.builder();
+        schemaContextBuilder.put(GEN_ARC_QNAME, XL_ARC_QNAME);
+        schemaContextBuilder.put(GEN_LINK_QNAME, XL_EXTENDED_QNAME);
+        schemaContextBuilder.put(LABEL_LABEL_QNAME, XL_RESOURCE_QNAME);
+        schemaContextBuilder.put(REFERENCE_REFERENCE_QNAME, XL_RESOURCE_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Publisher"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Name"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Number"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "IssueDate"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Chapter"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Article"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Note"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Section"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Subsection"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Paragraph"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Subparagraph"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Clause"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Subclause"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Appendix"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Example"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Page"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Exhibit"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Footnote"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "Sentence"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "URI"), LINK_PART_QNAME);
+        schemaContextBuilder.put(new QName(REF_NS, "URIDate"), LINK_PART_QNAME);
+        return SchemaContext.from(schemaContextBuilder.build());
     }
 }
