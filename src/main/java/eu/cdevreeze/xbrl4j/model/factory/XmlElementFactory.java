@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.xbrl4j.model.factory;
 
+import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.OtherXmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.link.*;
@@ -33,8 +34,6 @@ import eu.cdevreeze.xbrl4j.model.xs.SchemaElement;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -50,10 +49,10 @@ public class XmlElementFactory {
 
     private final SchemaContext schemaContext;
 
-    private final Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> schemaElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> schemaElementCreators =
             createSchemaElementCreatorMap();
 
-    private final Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> linkElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> linkElementCreators =
             createLinkElementCreatorMap();
 
     public XmlElementFactory(SchemaContext schemaContext) {
@@ -166,8 +165,9 @@ public class XmlElementFactory {
         }
     }
 
-    private Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
-        Map<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> result = new HashMap<>();
+    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> result =
+                new ImmutableMap.Builder<>();
         result.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
         result.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
         result.put(XS_GROUP_QNAME, e -> new GroupImpl(e, this::createXmlElement));
@@ -179,11 +179,12 @@ public class XmlElementFactory {
         result.put(XS_SIMPLE_TYPE_QNAME, e -> new SimpleTypeImpl(e, this::createXmlElement));
         result.put(XS_IMPORT_QNAME, e -> new ImportImpl(e, this::createXmlElement));
         result.put(XS_INCLUDE_QNAME, e -> new IncludeImpl(e, this::createXmlElement));
-        return result;
+        return result.build();
     }
 
-    private Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> createLinkElementCreatorMap() {
-        Map<QName, Function<AncestryAwareElementApi<?>, LinkElement>> result = new HashMap<>();
+    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> createLinkElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, LinkElement>> result =
+                new ImmutableMap.Builder<>();
         result.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
         result.put(LINK_ARCROLE_TYPE_QNAME, e -> new ArcroleTypeImpl(e, this::createXmlElement));
         result.put(LINK_CALCULATION_ARC_QNAME, e -> new CalculationArcImpl(e, this::createXmlElement));
@@ -210,6 +211,6 @@ public class XmlElementFactory {
         result.put(LINK_ROLE_TYPE_QNAME, e -> new RoleTypeImpl(e, this::createXmlElement));
         result.put(LINK_SCHEMA_REF_QNAME, e -> new SchemaRefImpl(e, this::createXmlElement));
         result.put(LINK_USED_ON_QNAME, e -> new UsedOnImpl(e, this::createXmlElement));
-        return result;
+        return result.build();
     }
 }
