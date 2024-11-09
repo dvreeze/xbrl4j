@@ -20,12 +20,14 @@ import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.OtherXmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.link.*;
+import eu.cdevreeze.xbrl4j.model.internal.ref.*;
 import eu.cdevreeze.xbrl4j.model.internal.xl.OtherXlArcImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.OtherXlExtendedLinkImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.OtherXlResourceImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xs.*;
 import eu.cdevreeze.xbrl4j.model.link.LinkElement;
 import eu.cdevreeze.xbrl4j.model.link.Linkbase;
+import eu.cdevreeze.xbrl4j.model.ref.RefElement;
 import eu.cdevreeze.xbrl4j.model.xl.XlArc;
 import eu.cdevreeze.xbrl4j.model.xl.XlExtendedLink;
 import eu.cdevreeze.xbrl4j.model.xl.XlResource;
@@ -55,6 +57,9 @@ public class XmlElementFactory {
     private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> linkElementCreators =
             createLinkElementCreatorMap();
 
+    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, RefElement>> refElementCreators =
+            createRefElementCreatorMap();
+
     public XmlElementFactory(SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
     }
@@ -80,6 +85,7 @@ public class XmlElementFactory {
 
     public Optional<XmlElement> optionallyCreateXmlElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreateSchemaElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e)
+                .or(() -> optionallyCreateRefElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
                 .or(() -> optionallyCreateLinkElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e));
     }
 
@@ -104,6 +110,20 @@ public class XmlElementFactory {
             return Optional.ofNullable(linkElementCreators.get(name))
                     .map(f -> f.apply(underlyingElement))
                     .or(() -> Optional.of(new OtherLinkElementImpl(underlyingElement, this::createXmlElement)));
+        }
+    }
+
+    public Optional<RefElement> optionallyCreateRefElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(REF_NS)).findFirst();
+
+        if (sgOrSelfOption.isEmpty()) {
+            return Optional.empty();
+        } else {
+            QName name = sgOrSelfOption.orElseThrow();
+
+            return Optional.ofNullable(refElementCreators.get(name))
+                    .map(f -> f.apply(underlyingElement))
+                    .or(() -> Optional.of(new OtherRefElementImpl(underlyingElement, this::createXmlElement)));
         }
     }
 
@@ -211,6 +231,33 @@ public class XmlElementFactory {
         builder.put(LINK_ROLE_TYPE_QNAME, e -> new RoleTypeImpl(e, this::createXmlElement));
         builder.put(LINK_SCHEMA_REF_QNAME, e -> new SchemaRefImpl(e, this::createXmlElement));
         builder.put(LINK_USED_ON_QNAME, e -> new UsedOnImpl(e, this::createXmlElement));
+        return builder.build();
+    }
+
+    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, RefElement>> createRefElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, RefElement>> builder =
+                new ImmutableMap.Builder<>();
+        builder.put(REF_APPENDIX_QNAME, e -> new RefAppendixImpl(e, this::createXmlElement));
+        builder.put(REF_ARTICLE_QNAME, e -> new RefArticleImpl(e, this::createXmlElement));
+        builder.put(REF_CHAPTER_QNAME, e -> new RefChapterImpl(e, this::createXmlElement));
+        builder.put(REF_CLAUSE_QNAME, e -> new RefClauseImpl(e, this::createXmlElement));
+        builder.put(REF_EXAMPLE_QNAME, e -> new RefExampleImpl(e, this::createXmlElement));
+        builder.put(REF_EXHIBIT_QNAME, e -> new RefExhibitImpl(e, this::createXmlElement));
+        builder.put(REF_FOOTNOTE_QNAME, e -> new RefFootnoteImpl(e, this::createXmlElement));
+        builder.put(REF_ISSUE_DATE_QNAME, e -> new RefIssueDateImpl(e, this::createXmlElement));
+        builder.put(REF_NAME_QNAME, e -> new RefNameImpl(e, this::createXmlElement));
+        builder.put(REF_NOTE_QNAME, e -> new RefNoteImpl(e, this::createXmlElement));
+        builder.put(REF_NUMBER_QNAME, e -> new RefNumberImpl(e, this::createXmlElement));
+        builder.put(REF_PAGE_QNAME, e -> new RefPageImpl(e, this::createXmlElement));
+        builder.put(REF_PARAGRAPH_QNAME, e -> new RefParagraphImpl(e, this::createXmlElement));
+        builder.put(REF_PUBLISHER_QNAME, e -> new RefPublisherImpl(e, this::createXmlElement));
+        builder.put(REF_SECTION_QNAME, e -> new RefSectionImpl(e, this::createXmlElement));
+        builder.put(REF_SENTENCE_QNAME, e -> new RefSentenceImpl(e, this::createXmlElement));
+        builder.put(REF_SUBCLAUSE_QNAME, e -> new RefSubclauseImpl(e, this::createXmlElement));
+        builder.put(REF_SUBPARAGRAPH_QNAME, e -> new RefSubparagraphImpl(e, this::createXmlElement));
+        builder.put(REF_SUBSECTION_QNAME, e -> new RefSubsectionImpl(e, this::createXmlElement));
+        builder.put(REF_URI_QNAME, e -> new RefUriImpl(e, this::createXmlElement));
+        builder.put(REF_URI_DATE_QNAME, e -> new RefUriDateImpl(e, this::createXmlElement));
         return builder.build();
     }
 }

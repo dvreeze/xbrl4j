@@ -27,7 +27,8 @@
  * to substitution groups. That also implies that there is no hard separation between taxonomy elements
  * and instance elements. After all, footnote links and presentation links are both XLink extended
  * links, so they share at least that "ancestry". The subpackage names are organized according to
- * preferred prefixes of the target namespaces of the corresponding schemas.
+ * preferred prefixes of the target namespaces of the corresponding schemas. Substitution group membership
+ * is represented by interface inheritance.
  *
  * @author Chris de Vreeze
  */

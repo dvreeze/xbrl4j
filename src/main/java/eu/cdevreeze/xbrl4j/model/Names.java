@@ -87,6 +87,28 @@ public class Names {
     public static final QName XL_EXTENDED_QNAME = new QName(XL_NS, "extended");
     public static final QName XL_RESOURCE_QNAME = new QName(XL_NS, "resource");
 
+    public static final QName REF_PUBLISHER_QNAME = new QName(REF_NS, "Publisher");
+    public static final QName REF_NAME_QNAME = new QName(REF_NS, "Name");
+    public static final QName REF_NUMBER_QNAME = new QName(REF_NS, "Number");
+    public static final QName REF_ISSUE_DATE_QNAME = new QName(REF_NS, "IssueDate");
+    public static final QName REF_CHAPTER_QNAME = new QName(REF_NS, "Chapter");
+    public static final QName REF_ARTICLE_QNAME = new QName(REF_NS, "Article");
+    public static final QName REF_NOTE_QNAME = new QName(REF_NS, "Note");
+    public static final QName REF_SECTION_QNAME = new QName(REF_NS, "Section");
+    public static final QName REF_SUBSECTION_QNAME = new QName(REF_NS, "Subsection");
+    public static final QName REF_PARAGRAPH_QNAME = new QName(REF_NS, "Paragraph");
+    public static final QName REF_SUBPARAGRAPH_QNAME = new QName(REF_NS, "Subparagraph");
+    public static final QName REF_CLAUSE_QNAME = new QName(REF_NS, "Clause");
+    public static final QName REF_SUBCLAUSE_QNAME = new QName(REF_NS, "Subclause");
+    public static final QName REF_APPENDIX_QNAME = new QName(REF_NS, "Appendix");
+    public static final QName REF_EXAMPLE_QNAME = new QName(REF_NS, "Example");
+    public static final QName REF_PAGE_QNAME = new QName(REF_NS, "Page");
+    public static final QName REF_EXHIBIT_QNAME = new QName(REF_NS, "Exhibit");
+    public static final QName REF_FOOTNOTE_QNAME = new QName(REF_NS, "Footnote");
+    public static final QName REF_SENTENCE_QNAME = new QName(REF_NS, "Sentence");
+    public static final QName REF_URI_QNAME = new QName(REF_NS, "URI");
+    public static final QName REF_URI_DATE_QNAME = new QName(REF_NS, "URIDate");
+
     // Attribute names
 
     public static final QName ARCROLE_URI_QNAME = new QName("arcroleURI");
