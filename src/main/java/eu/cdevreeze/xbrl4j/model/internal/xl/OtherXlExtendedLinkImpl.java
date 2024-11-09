@@ -18,7 +18,6 @@ package eu.cdevreeze.xbrl4j.model.internal.xl;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xl.XlArc;
@@ -28,7 +27,7 @@ import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
@@ -41,10 +40,9 @@ public class OtherXlExtendedLinkImpl extends XmlElementImpl implements XlExtende
 
     public OtherXlExtendedLinkImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 
     @Override

@@ -17,12 +17,11 @@
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.link.Definition;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of Definition.
@@ -33,9 +32,8 @@ public class DefinitionImpl extends XmlElementImpl implements Definition {
 
     public DefinitionImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 }

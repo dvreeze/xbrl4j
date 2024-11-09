@@ -18,12 +18,11 @@ package eu.cdevreeze.xbrl4j.model.internal;
 
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -36,18 +35,14 @@ public abstract class XmlElementImpl implements XmlElement {
 
     private final AncestryAwareElementApi<?> underlyingElement;
 
-    private final SchemaContext schemaContext;
-
     // Must be very fast!
-    private final BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator;
+    private final Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator;
 
     public XmlElementImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
         this.underlyingElement = underlyingElement;
-        this.schemaContext = schemaContext;
         this.xmlElementCreator = xmlElementCreator;
     }
 
@@ -156,7 +151,7 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Stream<XmlElement> elementStream() {
         return underlyingElement.elementStream()
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .map(xmlElementCreator);
     }
 
     @Override
@@ -167,14 +162,14 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Stream<XmlElement> topmostElementStream(Predicate<? super XmlElement> predicate) {
         return underlyingElement
-                .topmostElementStream(e -> predicate.test(xmlElementCreator.apply(e, schemaContext)))
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .topmostElementStream(e -> predicate.test(xmlElementCreator.apply(e)))
+                .map(xmlElementCreator);
     }
 
     @Override
     public Stream<XmlElement> childElementStream() {
         return underlyingElement.childElementStream()
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .map(xmlElementCreator);
     }
 
     @Override
@@ -185,7 +180,7 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Stream<XmlElement> descendantElementOrSelfStream() {
         return underlyingElement.descendantElementOrSelfStream()
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .map(xmlElementCreator);
     }
 
     @Override
@@ -196,7 +191,7 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Stream<XmlElement> descendantElementStream() {
         return underlyingElement.descendantElementStream()
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .map(xmlElementCreator);
     }
 
     @Override
@@ -207,14 +202,14 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Stream<XmlElement> topmostDescendantElementOrSelfStream(Predicate<? super XmlElement> predicate) {
         return underlyingElement
-                .topmostDescendantElementOrSelfStream(e -> predicate.test(xmlElementCreator.apply(e, schemaContext)))
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .topmostDescendantElementOrSelfStream(e -> predicate.test(xmlElementCreator.apply(e)))
+                .map(xmlElementCreator);
     }
 
     @Override
     public Stream<XmlElement> topmostDescendantElementStream(Predicate<? super XmlElement> predicate) {
         return underlyingElement
-                .topmostDescendantElementStream(e -> predicate.test(xmlElementCreator.apply(e, schemaContext)))
-                .map(e -> xmlElementCreator.apply(e, schemaContext));
+                .topmostDescendantElementStream(e -> predicate.test(xmlElementCreator.apply(e)))
+                .map(xmlElementCreator);
     }
 }

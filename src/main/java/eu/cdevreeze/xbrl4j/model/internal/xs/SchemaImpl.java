@@ -17,12 +17,11 @@
 package eu.cdevreeze.xbrl4j.model.internal.xs;
 
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of Schema.
@@ -33,9 +32,8 @@ public class SchemaImpl extends XmlElementImpl implements Schema {
 
     public SchemaImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 }

@@ -17,7 +17,6 @@
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.SchemaRef;
@@ -25,7 +24,7 @@ import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.net.URI;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of SchemaRef.
@@ -36,10 +35,9 @@ public class SchemaRefImpl extends XmlElementImpl implements SchemaRef {
 
     public SchemaRefImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 
     @Override

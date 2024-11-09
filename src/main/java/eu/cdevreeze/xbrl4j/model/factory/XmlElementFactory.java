@@ -64,7 +64,7 @@ public class XmlElementFactory {
                 .or(() -> optionallyCreateOtherXlLink(underlyingElement).map(e -> (XmlElement) e))
                 .or(() -> optionallyCreateOtherXlResource(underlyingElement).map(e -> (XmlElement) e))
                 .orElse(
-                        new OtherXmlElementImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new OtherXmlElementImpl(underlyingElement, this::createXmlElement)
                 );
     }
 
@@ -77,40 +77,39 @@ public class XmlElementFactory {
         if (underlyingElement.elementName().getNamespaceURI().equals(XS_NS)) {
             return switch (underlyingElement.elementName().getLocalPart()) {
                 case "element" -> Optional.of(
-                        new ElementDeclarationImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ElementDeclarationImpl(underlyingElement, this::createXmlElement)
                 );
                 case "attribute" -> Optional.of(
-                        new AttributeDeclarationImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new AttributeDeclarationImpl(underlyingElement, this::createXmlElement)
                 );
                 case "group" -> Optional.of(
-                        new GroupImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new GroupImpl(underlyingElement, this::createXmlElement)
                 );
                 case "attributeGroup" -> Optional.of(
-                        new AttributeGroupImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new AttributeGroupImpl(underlyingElement, this::createXmlElement)
                 );
                 case "annotation" -> Optional.of(
-                        new AnnotationSchemaElementImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new AnnotationSchemaElementImpl(underlyingElement, this::createXmlElement)
                 );
                 case "appinfo" -> Optional.of(
-                        new AppInfoImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new AppInfoImpl(underlyingElement, this::createXmlElement)
                 );
                 case "schema" -> Optional.of(
-                        new SchemaImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new SchemaImpl(underlyingElement, this::createXmlElement)
                 );
                 case "complexType" -> Optional.of(
-                        new ComplexTypeImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ComplexTypeImpl(underlyingElement, this::createXmlElement)
                 );
                 case "simpleType" -> Optional.of(
-                        new SimpleTypeImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new SimpleTypeImpl(underlyingElement, this::createXmlElement)
                 );
                 case "import" -> Optional.of(
-                        new ImportImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ImportImpl(underlyingElement, this::createXmlElement)
                 );
                 case "include" -> Optional.of(
-                        new IncludeImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new IncludeImpl(underlyingElement, this::createXmlElement)
                 );
-                default ->
-                        Optional.of(new OtherSchemaElementImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement));
+                default -> Optional.of(new OtherSchemaElementImpl(underlyingElement, this::createXmlElement));
             };
         } else {
             return Optional.empty();
@@ -128,85 +127,84 @@ public class XmlElementFactory {
 
             return switch (name.getLocalPart()) {
                 case "loc" -> Optional.of(
-                        new LocImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LocImpl(underlyingElement, this::createXmlElement)
                 );
                 case "definitionArc" -> Optional.of(
-                        new DefinitionArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new DefinitionArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "presentationArc" -> Optional.of(
-                        new PresentationArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new PresentationArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "calculationArc" -> Optional.of(
-                        new CalculationArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new CalculationArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "labelArc" -> Optional.of(
-                        new LabelArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LabelArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "referenceArc" -> Optional.of(
-                        new ReferenceArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ReferenceArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "footnoteArc" -> Optional.of(
-                        new FootnoteArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new FootnoteArcImpl(underlyingElement, this::createXmlElement)
                 );
                 case "definitionLink" -> Optional.of(
-                        new DefinitionLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new DefinitionLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "presentationLink" -> Optional.of(
-                        new PresentationLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new PresentationLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "calculationLink" -> Optional.of(
-                        new CalculationLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new CalculationLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "labelLink" -> Optional.of(
-                        new LabelLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LabelLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "referenceLink" -> Optional.of(
-                        new ReferenceLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ReferenceLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "footnoteLink" -> Optional.of(
-                        new FootnoteLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new FootnoteLinkImpl(underlyingElement, this::createXmlElement)
                 );
                 case "label" -> Optional.of(
-                        new LabelImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LabelImpl(underlyingElement, this::createXmlElement)
                 );
                 case "reference" -> Optional.of(
-                        new ReferenceImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ReferenceImpl(underlyingElement, this::createXmlElement)
                 );
                 case "footnote" -> Optional.of(
-                        new FootnoteImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new FootnoteImpl(underlyingElement, this::createXmlElement)
                 );
                 case "linkbase" -> Optional.of(
-                        new LinkbaseImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LinkbaseImpl(underlyingElement, this::createXmlElement)
                 );
                 case "arcroleRef" -> Optional.of(
-                        new ArcroleRefImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ArcroleRefImpl(underlyingElement, this::createXmlElement)
                 );
                 case "roleRef" -> Optional.of(
-                        new RoleRefImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new RoleRefImpl(underlyingElement, this::createXmlElement)
                 );
                 case "linkbaseRef" -> Optional.of(
-                        new LinkbaseRefImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new LinkbaseRefImpl(underlyingElement, this::createXmlElement)
                 );
                 case "schemaRef" -> Optional.of(
-                        new SchemaRefImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new SchemaRefImpl(underlyingElement, this::createXmlElement)
                 );
                 case "arcroleType" -> Optional.of(
-                        new ArcroleTypeImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new ArcroleTypeImpl(underlyingElement, this::createXmlElement)
                 );
                 case "roleType" -> Optional.of(
-                        new RoleTypeImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new RoleTypeImpl(underlyingElement, this::createXmlElement)
                 );
                 case "definition" -> Optional.of(
-                        new DefinitionImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new DefinitionImpl(underlyingElement, this::createXmlElement)
                 );
                 case "part" -> Optional.of(
-                        new PartImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new PartImpl(underlyingElement, this::createXmlElement)
                 );
                 case "usedOn" -> Optional.of(
-                        new UsedOnImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                        new UsedOnImpl(underlyingElement, this::createXmlElement)
                 );
-                default ->
-                        Optional.of(new OtherLinkElementImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement));
+                default -> Optional.of(new OtherLinkElementImpl(underlyingElement, this::createXmlElement));
             };
         }
     }
@@ -231,7 +229,7 @@ public class XmlElementFactory {
             return Optional.empty();
         } else {
             return Optional.of(
-                    new OtherXlArcImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                    new OtherXlArcImpl(underlyingElement, this::createXmlElement)
             );
         }
     }
@@ -244,7 +242,7 @@ public class XmlElementFactory {
             return Optional.empty();
         } else {
             return Optional.of(
-                    new OtherXlExtendedLinkImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                    new OtherXlExtendedLinkImpl(underlyingElement, this::createXmlElement)
             );
         }
     }
@@ -257,13 +255,8 @@ public class XmlElementFactory {
             return Optional.empty();
         } else {
             return Optional.of(
-                    new OtherXlResourceImpl(underlyingElement, schemaContext, XmlElementFactory::createXmlElement)
+                    new OtherXlResourceImpl(underlyingElement, this::createXmlElement)
             );
         }
-    }
-
-    // TODO Do we really need this? I don't think so. We can simplify the BiFunction to a Function.
-    private static XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement, SchemaContext schemaContext) {
-        return new XmlElementFactory(schemaContext).createXmlElement(underlyingElement);
     }
 }

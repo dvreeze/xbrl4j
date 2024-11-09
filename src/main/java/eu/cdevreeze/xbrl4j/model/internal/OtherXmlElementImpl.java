@@ -18,10 +18,9 @@ package eu.cdevreeze.xbrl4j.model.internal;
 
 import eu.cdevreeze.xbrl4j.model.OtherXmlElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of OtherXmlElement.
@@ -32,9 +31,8 @@ public class OtherXmlElementImpl extends XmlElementImpl implements OtherXmlEleme
 
     public OtherXmlElementImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 }

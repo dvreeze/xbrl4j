@@ -18,7 +18,6 @@ package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.CalculationArc;
@@ -29,7 +28,7 @@ import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
@@ -42,10 +41,9 @@ public class CalculationLinkImpl extends XmlElementImpl implements CalculationLi
 
     public CalculationLinkImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 
     @Override

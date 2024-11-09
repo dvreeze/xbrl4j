@@ -18,7 +18,6 @@ package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.ReferenceArc;
@@ -28,7 +27,7 @@ import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of ReferenceArc.
@@ -39,10 +38,9 @@ public class ReferenceArcImpl extends XmlElementImpl implements ReferenceArc {
 
     public ReferenceArcImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 
     @Override

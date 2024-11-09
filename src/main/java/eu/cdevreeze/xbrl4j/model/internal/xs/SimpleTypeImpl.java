@@ -17,12 +17,11 @@
 package eu.cdevreeze.xbrl4j.model.internal.xs;
 
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.xs.SimpleType;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of SimpleType.
@@ -33,9 +32,8 @@ public class SimpleTypeImpl extends XmlElementImpl implements SimpleType {
 
     public SimpleTypeImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 }

@@ -18,7 +18,6 @@ package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.link.ArcroleType;
 import eu.cdevreeze.xbrl4j.model.link.Definition;
@@ -26,7 +25,7 @@ import eu.cdevreeze.xbrl4j.model.link.UsedOn;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static eu.cdevreeze.xbrl4j.model.Names.*;
 
@@ -39,10 +38,9 @@ public class ArcroleTypeImpl extends XmlElementImpl implements ArcroleType {
 
     public ArcroleTypeImpl(
             AncestryAwareElementApi<?> underlyingElement,
-            SchemaContext schemaContext,
-            BiFunction<AncestryAwareElementApi<?>, SchemaContext, XmlElement> xmlElementCreator
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
-        super(underlyingElement, schemaContext, xmlElementCreator);
+        super(underlyingElement, xmlElementCreator);
     }
 
     @Override
