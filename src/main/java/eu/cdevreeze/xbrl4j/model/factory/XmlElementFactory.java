@@ -80,6 +80,9 @@ public class XmlElementFactory {
     private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, ReferenceElement>> referenceElementCreators =
             createReferenceElementCreatorMap();
 
+    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, XmlElement>> commonlyUsedElementCreators =
+            createCommonlyUsedElementCreatorMap();
+
     public XmlElementFactory(SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
     }
@@ -88,9 +91,17 @@ public class XmlElementFactory {
         return schemaContext;
     }
 
-    // TODO Short-cut evaluation for very common element QNames where we don't need the substitution group
-
     public XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement) {
+        Optional<XmlElement> optionalCommonlyUsedElement =
+                Optional.ofNullable(commonlyUsedElementCreators.get(underlyingElement.elementName()))
+                        .map(f -> f.apply(underlyingElement));
+
+        if (optionalCommonlyUsedElement.isPresent()) {
+            return optionalCommonlyUsedElement.orElseThrow();
+        }
+
+        // Only now look at substitution groups
+
         Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
         return createXmlElement(underlyingElement, sgsOrSelf);
     }
@@ -125,73 +136,53 @@ public class XmlElementFactory {
     }
 
     public Optional<LinkElement> optionallyCreateLinkElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
-        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(LINK_NS)).findFirst();
-
-        if (sgOrSelfOption.isEmpty()) {
-            return Optional.empty();
-        } else {
-            QName name = sgOrSelfOption.orElseThrow();
-
-            return Optional.ofNullable(linkElementCreators.get(name))
-                    .map(f -> f.apply(underlyingElement))
-                    .or(() -> Optional.of(new OtherLinkElementImpl(underlyingElement, this::createXmlElement)));
-        }
+        return optionallyCreate(
+                underlyingElement,
+                substitutionGroupsOrSelf,
+                LINK_NS,
+                linkElementCreators,
+                e -> new OtherLinkElementImpl(e, this::createXmlElement)
+        );
     }
 
     public Optional<RefElement> optionallyCreateRefElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
-        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(REF_NS)).findFirst();
-
-        if (sgOrSelfOption.isEmpty()) {
-            return Optional.empty();
-        } else {
-            QName name = sgOrSelfOption.orElseThrow();
-
-            return Optional.ofNullable(refElementCreators.get(name))
-                    .map(f -> f.apply(underlyingElement))
-                    .or(() -> Optional.of(new OtherRefElementImpl(underlyingElement, this::createXmlElement)));
-        }
+        return optionallyCreate(
+                underlyingElement,
+                substitutionGroupsOrSelf,
+                REF_NS,
+                refElementCreators,
+                e -> new OtherRefElementImpl(e, this::createXmlElement)
+        );
     }
 
     public Optional<GenElement> optionallyCreateGenElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
-        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(GEN_NS)).findFirst();
-
-        if (sgOrSelfOption.isEmpty()) {
-            return Optional.empty();
-        } else {
-            QName name = sgOrSelfOption.orElseThrow();
-
-            return Optional.ofNullable(genElementCreators.get(name))
-                    .map(f -> f.apply(underlyingElement))
-                    .or(() -> Optional.of(new OtherGenElementImpl(underlyingElement, this::createXmlElement)));
-        }
+        return optionallyCreate(
+                underlyingElement,
+                substitutionGroupsOrSelf,
+                GEN_NS,
+                genElementCreators,
+                e -> new OtherGenElementImpl(e, this::createXmlElement)
+        );
     }
 
     public Optional<LabelElement> optionallyCreateLabelElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
-        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(LABEL_NS)).findFirst();
-
-        if (sgOrSelfOption.isEmpty()) {
-            return Optional.empty();
-        } else {
-            QName name = sgOrSelfOption.orElseThrow();
-
-            return Optional.ofNullable(labelElementCreators.get(name))
-                    .map(f -> f.apply(underlyingElement))
-                    .or(() -> Optional.of(new OtherLabelElementImpl(underlyingElement, this::createXmlElement)));
-        }
+        return optionallyCreate(
+                underlyingElement,
+                substitutionGroupsOrSelf,
+                LABEL_NS,
+                labelElementCreators,
+                e -> new OtherLabelElementImpl(e, this::createXmlElement)
+        );
     }
 
     public Optional<ReferenceElement> optionallyCreateReferenceElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
-        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(REFERENCE_NS)).findFirst();
-
-        if (sgOrSelfOption.isEmpty()) {
-            return Optional.empty();
-        } else {
-            QName name = sgOrSelfOption.orElseThrow();
-
-            return Optional.ofNullable(referenceElementCreators.get(name))
-                    .map(f -> f.apply(underlyingElement))
-                    .or(() -> Optional.of(new OtherReferenceElementImpl(underlyingElement, this::createXmlElement)));
-        }
+        return optionallyCreate(
+                underlyingElement,
+                substitutionGroupsOrSelf,
+                REFERENCE_NS,
+                referenceElementCreators,
+                e -> new OtherReferenceElementImpl(e, this::createXmlElement)
+        );
     }
 
     public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement) {
@@ -249,6 +240,26 @@ public class XmlElementFactory {
             return Optional.of(
                     new OtherXlResourceImpl(underlyingElement, this::createXmlElement)
             );
+        }
+    }
+
+    public <T extends XmlElement> Optional<T> optionallyCreate(
+            AncestryAwareElementApi<?> underlyingElement,
+            Set<QName> substitutionGroupsOrSelf,
+            String targetNamespace,
+            ImmutableMap<QName, Function<AncestryAwareElementApi<?>, T>> elementCreatorMap,
+            Function<AncestryAwareElementApi<?>, T> fallbackElementCreator
+    ) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(targetNamespace)).findFirst();
+
+        if (sgOrSelfOption.isEmpty()) {
+            return Optional.empty();
+        } else {
+            QName name = sgOrSelfOption.orElseThrow();
+
+            return Optional.ofNullable(elementCreatorMap.get(name))
+                    .map(f -> f.apply(underlyingElement))
+                    .or(() -> Optional.of(fallbackElementCreator.apply(underlyingElement)));
         }
     }
 
@@ -347,6 +358,38 @@ public class XmlElementFactory {
         ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, ReferenceElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(REFERENCE_REFERENCE_QNAME, e -> new GenericReferenceImpl(e, this::createXmlElement));
+        return builder.build();
+    }
+
+    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, XmlElement>> createCommonlyUsedElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, XmlElement>> builder =
+                new ImmutableMap.Builder<>();
+        builder.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
+        builder.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
+        builder.put(XS_ANNOTATION_QNAME, e -> new AnnotationSchemaElementImpl(e, this::createXmlElement));
+        builder.put(XS_APPINFO_QNAME, e -> new AppInfoImpl(e, this::createXmlElement));
+        builder.put(XS_IMPORT_QNAME, e -> new ImportImpl(e, this::createXmlElement));
+        builder.put(LINK_LOC_QNAME, e -> new LocImpl(e, this::createXmlElement));
+        builder.put(GEN_ARC_QNAME, e -> new GenericArcImpl(e, this::createXmlElement));
+        builder.put(GEN_LINK_QNAME, e -> new GenericLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_LINKBASE_QNAME, e -> new LinkbaseImpl(e, this::createXmlElement));
+        builder.put(LINK_LINKBASE_REF_QNAME, e -> new LinkbaseRefImpl(e, this::createXmlElement));
+        builder.put(LINK_ROLE_REF_QNAME, e -> new RoleRefImpl(e, this::createXmlElement));
+        builder.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
+        builder.put(LABEL_LABEL_QNAME, e -> new GenericLabelImpl(e, this::createXmlElement));
+        builder.put(REFERENCE_REFERENCE_QNAME, e -> new GenericReferenceImpl(e, this::createXmlElement));
+        builder.put(LINK_PRESENTATION_ARC_QNAME, e -> new PresentationArcImpl(e, this::createXmlElement));
+        builder.put(LINK_DEFINITION_ARC_QNAME, e -> new DefinitionArcImpl(e, this::createXmlElement));
+        builder.put(LINK_CALCULATION_ARC_QNAME, e -> new CalculationArcImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_ARC_QNAME, e -> new LabelArcImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_ARC_QNAME, e -> new ReferenceArcImpl(e, this::createXmlElement));
+        builder.put(LINK_PRESENTATION_LINK_QNAME, e -> new PresentationLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_DEFINITION_LINK_QNAME, e -> new DefinitionLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_CALCULATION_LINK_QNAME, e -> new CalculationLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_LINK_QNAME, e -> new LabelLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_LINK_QNAME, e -> new ReferenceLinkImpl(e, this::createXmlElement));
+        builder.put(LINK_LABEL_QNAME, e -> new LabelImpl(e, this::createXmlElement));
+        builder.put(LINK_REFERENCE_QNAME, e -> new ReferenceImpl(e, this::createXmlElement));
         return builder.build();
     }
 }
