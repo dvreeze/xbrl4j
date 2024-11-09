@@ -39,8 +39,7 @@ import java.util.Set;
 import static eu.cdevreeze.xbrl4j.model.Names.*;
 
 /**
- * Factory of XmlElement instances. Must be very fast. It is not aware of dimensions
- * (and generic links).
+ * Factory of XmlElement instances. Must be very fast.
  *
  * @author Chris de Vreeze
  */
@@ -56,24 +55,27 @@ public class XmlElementFactory {
         return schemaContext;
     }
 
-    // TODO Speed up. We don't have to re-compute substitution groups all the time.
-
     public XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement) {
-        return optionallyCreateXmlElement(underlyingElement)
-                .or(() -> optionallyCreateOtherXlArc(underlyingElement).map(e -> (XmlElement) e))
-                .or(() -> optionallyCreateOtherXlLink(underlyingElement).map(e -> (XmlElement) e))
-                .or(() -> optionallyCreateOtherXlResource(underlyingElement).map(e -> (XmlElement) e))
+        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
+        return createXmlElement(underlyingElement, sgsOrSelf);
+    }
+
+    public XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        return optionallyCreateXmlElement(underlyingElement, substitutionGroupsOrSelf)
+                .or(() -> optionallyCreateOtherXlArc(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
+                .or(() -> optionallyCreateOtherXlLink(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
+                .or(() -> optionallyCreateOtherXlResource(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
                 .orElse(
                         new OtherXmlElementImpl(underlyingElement, this::createXmlElement)
                 );
     }
 
-    public Optional<XmlElement> optionallyCreateXmlElement(AncestryAwareElementApi<?> underlyingElement) {
-        return optionallyCreateSchemaElement(underlyingElement).map(e -> (XmlElement) e)
-                .or(() -> optionallyCreateLinkElement(underlyingElement).map(e -> (XmlElement) e));
+    public Optional<XmlElement> optionallyCreateXmlElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        return optionallyCreateSchemaElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e)
+                .or(() -> optionallyCreateLinkElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e));
     }
 
-    public Optional<SchemaElement> optionallyCreateSchemaElement(AncestryAwareElementApi<?> underlyingElement) {
+    public Optional<SchemaElement> optionallyCreateSchemaElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         if (underlyingElement.elementName().getNamespaceURI().equals(XS_NS)) {
             return switch (underlyingElement.elementName().getLocalPart()) {
                 case "element" -> Optional.of(
@@ -116,9 +118,8 @@ public class XmlElementFactory {
         }
     }
 
-    public Optional<LinkElement> optionallyCreateLinkElement(AncestryAwareElementApi<?> underlyingElement) {
-        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
-        Optional<QName> sgOrSelfOption = sgsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(LINK_NS)).findFirst();
+    public Optional<LinkElement> optionallyCreateLinkElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(LINK_NS)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
             return Optional.empty();
@@ -210,20 +211,29 @@ public class XmlElementFactory {
     }
 
     public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement) {
-        return optionallyCreateSchemaElement(underlyingElement)
+        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
+        return optionallyCreateSchema(underlyingElement, sgsOrSelf);
+    }
+
+    public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        return optionallyCreateSchemaElement(underlyingElement, substitutionGroupsOrSelf)
                 .filter(e -> e instanceof Schema)
                 .map(e -> (Schema) e);
     }
 
     public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElementApi<?> underlyingElement) {
-        return optionallyCreateLinkElement(underlyingElement)
+        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
+        return optionallyCreateLinkbase(underlyingElement, sgsOrSelf);
+    }
+
+    public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        return optionallyCreateLinkElement(underlyingElement, substitutionGroupsOrSelf)
                 .filter(e -> e instanceof Linkbase)
                 .map(e -> (Linkbase) e);
     }
 
-    private Optional<XlArc> optionallyCreateOtherXlArc(AncestryAwareElementApi<?> underlyingElement) {
-        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
-        Optional<QName> sgOrSelfOption = sgsOrSelf.stream().filter(n -> n.equals(XL_ARC_QNAME)).findFirst();
+    private Optional<XlArc> optionallyCreateOtherXlArc(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_ARC_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
             return Optional.empty();
@@ -234,9 +244,8 @@ public class XmlElementFactory {
         }
     }
 
-    private Optional<XlExtendedLink> optionallyCreateOtherXlLink(AncestryAwareElementApi<?> underlyingElement) {
-        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
-        Optional<QName> sgOrSelfOption = sgsOrSelf.stream().filter(n -> n.equals(XL_EXTENDED_QNAME)).findFirst();
+    private Optional<XlExtendedLink> optionallyCreateOtherXlLink(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_EXTENDED_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
             return Optional.empty();
@@ -247,9 +256,8 @@ public class XmlElementFactory {
         }
     }
 
-    private Optional<XlResource> optionallyCreateOtherXlResource(AncestryAwareElementApi<?> underlyingElement) {
-        Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
-        Optional<QName> sgOrSelfOption = sgsOrSelf.stream().filter(n -> n.equals(XL_RESOURCE_QNAME)).findFirst();
+    private Optional<XlResource> optionallyCreateOtherXlResource(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+        Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_RESOURCE_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
             return Optional.empty();
