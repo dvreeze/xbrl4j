@@ -55,7 +55,7 @@
     <dependency>
       <groupId>eu.cdevreeze.yaidom4j</groupId>
       <artifactId>yaidom4j</artifactId>
-      <version>0.9.0</version>
+      <version>0.9.1</version>
     </dependency>
     <!-- Test dependencies -->
     <dependency>

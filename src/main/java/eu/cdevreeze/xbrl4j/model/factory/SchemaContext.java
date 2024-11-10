@@ -122,6 +122,8 @@ public record SchemaContext(ImmutableMap<String, ImmutableMap<QName, QName>> sub
 
     private static SchemaContext createDefaultInstance() {
         ImmutableMap.Builder<QName, QName> schemaContextBuilder = ImmutableMap.builder();
+        schemaContextBuilder.put(XBRLDT_HYPERCUBE_ITEM_QNAME, XBRLI_ITEM_QNAME);
+        schemaContextBuilder.put(XBRLDT_DIMENSION_ITEM_QNAME, XBRLI_ITEM_QNAME);
         schemaContextBuilder.put(GEN_ARC_QNAME, XL_ARC_QNAME);
         schemaContextBuilder.put(GEN_LINK_QNAME, XL_EXTENDED_QNAME);
         schemaContextBuilder.put(LABEL_LABEL_QNAME, XL_RESOURCE_QNAME);

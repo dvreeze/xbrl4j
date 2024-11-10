@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.xs;
+package eu.cdevreeze.xbrl4j.model.internal.xs;
 
-import javax.xml.namespace.QName;
-import java.util.Optional;
+import eu.cdevreeze.xbrl4j.model.XmlElement;
+import eu.cdevreeze.xbrl4j.model.xs.TupleDeclaration;
+import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
+
+import java.util.function.Function;
 
 /**
- * An xs:element element, so an element declaration. It can be a global element declaration,
- * local element declaration, or element reference. There are subtypes for "concept declarations".
+ * Implementation of TupleDeclaration.
  *
  * @author Chris de Vreeze
  */
-public interface ElementDeclaration extends SchemaElement {
+public class TupleDeclarationImpl extends ElementDeclarationImpl implements TupleDeclaration {
 
-    Optional<QName> substitutionGroupOption();
+    public TupleDeclarationImpl(
+            AncestryAwareElementApi<?> underlyingElement,
+            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+    ) {
+        super(underlyingElement, xmlElementCreator);
+    }
 }

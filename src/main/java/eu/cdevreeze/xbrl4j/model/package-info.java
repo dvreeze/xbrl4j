@@ -29,6 +29,8 @@
  * links, so they share at least that "ancestry". The subpackage names are organized according to
  * preferred prefixes of the target namespaces of the corresponding core schemas. Substitution group membership
  * (within the core XBRL schemas) is represented by interface inheritance.
+ * <p>
+ * There are also subtypes of type "ElementDeclaration" for the different kinds of "concept declarations".
  *
  * @author Chris de Vreeze
  */

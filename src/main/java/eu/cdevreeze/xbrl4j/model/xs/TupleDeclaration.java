@@ -16,16 +16,10 @@
 
 package eu.cdevreeze.xbrl4j.model.xs;
 
-import javax.xml.namespace.QName;
-import java.util.Optional;
-
 /**
- * An xs:element element, so an element declaration. It can be a global element declaration,
- * local element declaration, or element reference. There are subtypes for "concept declarations".
+ * An element declaration for a tuple.
  *
  * @author Chris de Vreeze
  */
-public interface ElementDeclaration extends SchemaElement {
-
-    Optional<QName> substitutionGroupOption();
+public interface TupleDeclaration extends ConceptDeclaration {
 }

@@ -30,13 +30,16 @@ public class Names {
     public static final String LINK_NS = "http://www.xbrl.org/2003/linkbase";
     public static final String XL_NS = "http://www.xbrl.org/2003/XLink";
     public static final String XLINK_NS = "http://www.w3.org/1999/xlink";
+    public static final String XBRLI_NS = "http://www.xbrl.org/2003/instance";
+    public static final String XBRLDI_NS = "http://xbrl.org/2006/xbrldi";
+    public static final String XBRLDT_NS = "http://xbrl.org/2005/xbrldt";
     public static final String XS_NS = "http://www.w3.org/2001/XMLSchema"; // Schema 1.0 and 1.1
     public static final String GEN_NS = "http://xbrl.org/2008/generic";
     public static final String LABEL_NS = "http://xbrl.org/2008/label";
     public static final String REFERENCE_NS = "http://xbrl.org/2008/reference";
     public static final String REF_NS = "http://www.xbrl.org/2006/ref";
 
-    // Element names (including substitution groups)
+    // Element names (including substitution groups, which normally are abstract elements)
 
     public static final QName XS_ELEMENT_QNAME = new QName(XS_NS, "element");
     public static final QName XS_ATTRIBUTE_QNAME = new QName(XS_NS, "attribute");
@@ -49,6 +52,12 @@ public class Names {
     public static final QName XS_SCHEMA_QNAME = new QName(XS_NS, "schema");
     public static final QName XS_IMPORT_QNAME = new QName(XS_NS, "import");
     public static final QName XS_INCLUDE_QNAME = new QName(XS_NS, "include");
+
+    public static final QName XBRLI_ITEM_QNAME = new QName(XBRLI_NS, "item");
+    public static final QName XBRLI_TUPLE_QNAME = new QName(XBRLI_NS, "tuple");
+
+    public static final QName XBRLDT_HYPERCUBE_ITEM_QNAME = new QName(XBRLDT_NS, "hypercubeItem");
+    public static final QName XBRLDT_DIMENSION_ITEM_QNAME = new QName(XBRLDT_NS, "dimensionItem");
 
     public static final QName LINK_ARCROLE_REF_QNAME = new QName(LINK_NS, "arcroleRef");
     public static final QName LINK_ARCROLE_TYPE_QNAME = new QName(LINK_NS, "arcroleType");
@@ -121,6 +130,7 @@ public class Names {
     public static final QName ROLE_URI_QNAME = new QName("roleURI");
     public static final QName USE_QNAME = new QName("use");
     public static final QName WEIGHT_QNAME = new QName("weight");
+    public static final QName SUBSTITUTION_GROUP_QNAME = new QName("substitutionGroup");
 
     public static final QName XLINK_ACTUATE_QNAME = new QName(XLINK_NS, "actuate");
     public static final QName XLINK_ARCROLE_QNAME = new QName(XLINK_NS, "arcrole");

@@ -17,6 +17,7 @@
 package eu.cdevreeze.xbrl4j.model.factory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.gen.GenElement;
 import eu.cdevreeze.xbrl4j.model.internal.OtherXmlElementImpl;
@@ -41,6 +42,7 @@ import eu.cdevreeze.xbrl4j.model.reference.ReferenceElement;
 import eu.cdevreeze.xbrl4j.model.xl.XlArc;
 import eu.cdevreeze.xbrl4j.model.xl.XlExtendedLink;
 import eu.cdevreeze.xbrl4j.model.xl.XlResource;
+import eu.cdevreeze.xbrl4j.model.xs.ElementDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.xbrl4j.model.xs.SchemaElement;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
@@ -185,6 +187,31 @@ public class XmlElementFactory {
         );
     }
 
+    public Optional<ElementDeclaration> optionallyCreateElementDeclaration(AncestryAwareElementApi<?> underlyingElement) {
+        return Optional.of(underlyingElement)
+                .filter(e -> e.elementName().equals(XS_ELEMENT_QNAME))
+                .map(e -> {
+                    // This time we look at the substitution groups of the element declaration's substitution group attribute, if any
+                    // So here we do not look at the substitution groups of the element name, which is xs:element in any case
+                    ImmutableSet<QName> substGroups =
+                            substitutionGroupOption(underlyingElement)
+                                    .map(schemaContext::findSubstitutionGroupsOrSelf)
+                                    .orElse(ImmutableSet.of());
+
+                    if (substGroups.contains(XBRLDT_HYPERCUBE_ITEM_QNAME)) {
+                        return new HypercubeItemDeclarationImpl(underlyingElement, this::createXmlElement);
+                    } else if (substGroups.contains(XBRLDT_DIMENSION_ITEM_QNAME)) {
+                        return new DimensionItemDeclarationImpl(underlyingElement, this::createXmlElement);
+                    } else if (substGroups.contains(XBRLI_ITEM_QNAME)) {
+                        return new ItemDeclarationImpl(underlyingElement, this::createXmlElement);
+                    } else if (substGroups.contains(XBRLI_TUPLE_QNAME)) {
+                        return new TupleDeclarationImpl(underlyingElement, this::createXmlElement);
+                    } else {
+                        return new ElementDeclarationImpl(underlyingElement, this::createXmlElement);
+                    }
+                });
+    }
+
     public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement) {
         Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
         return optionallyCreateSchema(underlyingElement, sgsOrSelf);
@@ -243,7 +270,7 @@ public class XmlElementFactory {
         }
     }
 
-    public <T extends XmlElement> Optional<T> optionallyCreate(
+    private <T extends XmlElement> Optional<T> optionallyCreate(
             AncestryAwareElementApi<?> underlyingElement,
             Set<QName> substitutionGroupsOrSelf,
             String targetNamespace,
@@ -266,7 +293,7 @@ public class XmlElementFactory {
     private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
         ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> builder =
                 new ImmutableMap.Builder<>();
-        builder.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
+        builder.put(XS_ELEMENT_QNAME, e -> optionallyCreateElementDeclaration(e).orElseThrow());
         builder.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
         builder.put(XS_GROUP_QNAME, e -> new GroupImpl(e, this::createXmlElement));
         builder.put(XS_ATTRIBUTE_GROUP_QNAME, e -> new AttributeGroupImpl(e, this::createXmlElement));
@@ -364,7 +391,7 @@ public class XmlElementFactory {
     private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, XmlElement>> createCommonlyUsedElementCreatorMap() {
         ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, XmlElement>> builder =
                 new ImmutableMap.Builder<>();
-        builder.put(XS_ELEMENT_QNAME, e -> new ElementDeclarationImpl(e, this::createXmlElement));
+        builder.put(XS_ELEMENT_QNAME, e -> optionallyCreateElementDeclaration(e).orElseThrow());
         builder.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
         builder.put(XS_ANNOTATION_QNAME, e -> new AnnotationSchemaElementImpl(e, this::createXmlElement));
         builder.put(XS_APPINFO_QNAME, e -> new AppInfoImpl(e, this::createXmlElement));
@@ -391,5 +418,11 @@ public class XmlElementFactory {
         builder.put(LINK_LABEL_QNAME, e -> new LabelImpl(e, this::createXmlElement));
         builder.put(LINK_REFERENCE_QNAME, e -> new ReferenceImpl(e, this::createXmlElement));
         return builder.build();
+    }
+
+    private static Optional<QName> substitutionGroupOption(AncestryAwareElementApi<?> element) {
+        Optional<String> syntacticQNameOption = element.attributeOption(SUBSTITUTION_GROUP_QNAME);
+        return syntacticQNameOption
+                .map(n -> element.namespaceScopeOption().orElseThrow().resolveSyntacticElementQName(n));
     }
 }

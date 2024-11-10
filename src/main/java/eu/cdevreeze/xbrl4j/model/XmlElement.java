@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.xbrl4j.model;
 
+import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 
@@ -36,6 +37,8 @@ import java.util.stream.Stream;
 public interface XmlElement extends ElementApi<XmlElement> {
 
     AncestryAwareElementApi<?> underlyingElement();
+
+    NamespaceScope namespaceScope();
 
     /**
      * Alias of descendantElementOrSelfStream

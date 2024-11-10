@@ -18,6 +18,7 @@ package eu.cdevreeze.xbrl4j.model.internal;
 
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
+import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
@@ -49,6 +50,16 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public AncestryAwareElementApi<?> underlyingElement() {
         return underlyingElement;
+    }
+
+    @Override
+    public NamespaceScope namespaceScope() {
+        return namespaceScopeOption().orElseThrow();
+    }
+
+    @Override
+    public Optional<NamespaceScope> namespaceScopeOption() {
+        return underlyingElement().namespaceScopeOption();
     }
 
     @Override

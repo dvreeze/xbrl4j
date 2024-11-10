@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Objects;
 
-import static eu.cdevreeze.xbrl4j.model.Names.XL_RESOURCE_QNAME;
+import static eu.cdevreeze.xbrl4j.model.Names.*;
 
 /**
  * Shows the structure of the given taxonomy document, given as URI program argument.
@@ -48,11 +48,16 @@ public class ShowDocumentStructure {
         URI docUri = URI.create(args[0]);
 
         Document doc = Document.from(DocumentParsers.instance().parse(docUri));
+
+        String sbrNs = "http://www.nltaxonomie.nl/2011/xbrl/xbrl-syntax-extension";
         SchemaContext schemaContext = SchemaContext.defaultInstance()
-                .plus(
-                        new QName("http://www.nltaxonomie.nl/2011/xbrl/xbrl-syntax-extension", "linkroleOrder"),
-                        XL_RESOURCE_QNAME
-                );
+                .plus(new QName(sbrNs, "linkroleOrder"), XL_RESOURCE_QNAME)
+                .plus(new QName(sbrNs, "domainItem"), XBRLI_ITEM_QNAME)
+                .plus(new QName(sbrNs, "domainMemberItem"), XBRLI_ITEM_QNAME)
+                .plus(new QName(sbrNs, "primaryDomainItem"), XBRLI_ITEM_QNAME)
+                .plus(new QName(sbrNs, "presentationItem"), XBRLI_ITEM_QNAME)
+                .plus(new QName(sbrNs, "presentationTuple"), XBRLI_TUPLE_QNAME)
+                .plus(new QName(sbrNs, "specificationTuple"), XBRLI_TUPLE_QNAME);
         XmlElementFactory xmlElementFactory = new XmlElementFactory(schemaContext);
         XmlElement xmlElement = xmlElementFactory.createXmlElement(doc.documentElement());
 
