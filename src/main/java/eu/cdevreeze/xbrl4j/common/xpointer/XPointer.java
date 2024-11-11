@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.xs;
-
-import javax.xml.namespace.QName;
-import java.util.Optional;
+package eu.cdevreeze.xbrl4j.common.xpointer;
 
 /**
- * An xs:element element, so an element declaration. It can be a global element declaration,
- * local element declaration, or element reference. There are subtypes for "concept declarations".
+ * XPointer, in the context of XBRL. So either a shorthand pointer, or an element scheme pointer.
  *
  * @author Chris de Vreeze
  */
-public interface ElementDeclaration extends SchemaElement {
-
-    Optional<String> nameOption();
-
-    Optional<QName> substitutionGroupOption();
+public sealed interface XPointer permits ShorthandPointer, ElementSchemePointer {
 }

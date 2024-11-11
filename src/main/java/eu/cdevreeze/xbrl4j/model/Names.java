@@ -124,6 +124,7 @@ public class Names {
     public static final QName ARCROLE_URI_QNAME = new QName("arcroleURI");
     public static final QName CYCLES_ALLOWED_QNAME = new QName("cyclesAllowed");
     public static final QName ID_QNAME = new QName("id");
+    public static final QName NAME_QNAME = new QName("name");
     public static final QName ORDER_QNAME = new QName("order");
     public static final QName PREFERRED_LABEL_QNAME = new QName("preferredLabel");
     public static final QName PRIORITY_QNAME = new QName("priority");

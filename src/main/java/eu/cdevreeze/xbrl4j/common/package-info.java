@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.xbrl4j.model.xs;
-
-import javax.xml.namespace.QName;
-import java.util.Optional;
-
 /**
- * An xs:element element, so an element declaration. It can be a global element declaration,
- * local element declaration, or element reference. There are subtypes for "concept declarations".
+ * Common "utilities", such as support for xml:base, XPointer etc.
  *
  * @author Chris de Vreeze
  */
-public interface ElementDeclaration extends SchemaElement {
-
-    Optional<String> nameOption();
-
-    Optional<QName> substitutionGroupOption();
-}
+package eu.cdevreeze.xbrl4j.common;

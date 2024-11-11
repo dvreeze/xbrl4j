@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static eu.cdevreeze.xbrl4j.model.Names.NAME_QNAME;
 import static eu.cdevreeze.xbrl4j.model.Names.SUBSTITUTION_GROUP_QNAME;
 
 /**
@@ -39,6 +40,11 @@ public class ElementDeclarationImpl extends XmlElementImpl implements ElementDec
             Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
+    }
+
+    @Override
+    public Optional<String> nameOption() {
+        return attributeOption(NAME_QNAME);
     }
 
     @Override
