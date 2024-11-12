@@ -22,6 +22,7 @@ import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.factory.XmlElementFactory;
+import eu.cdevreeze.xbrl4j.model.internal.xs.SchemaImpl;
 import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
@@ -91,7 +92,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) schema.underlyingElement(), xpointer).map(ElementApi::elementName),
+                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointer).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointer).map(ElementApi::elementName)
         );
 
@@ -135,7 +136,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) schema.underlyingElement(), xpointer).map(ElementApi::elementName),
+                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointer).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointer).map(ElementApi::elementName)
         );
 
@@ -179,7 +180,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointers);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) schema.underlyingElement(), xpointers).map(ElementApi::elementName),
+                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointers).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointers).map(ElementApi::elementName)
         );
 

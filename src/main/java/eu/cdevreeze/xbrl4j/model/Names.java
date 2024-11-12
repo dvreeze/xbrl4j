@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.xbrl4j.model;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 /**
@@ -27,6 +28,7 @@ public class Names {
 
     // Namespaces
 
+    public static final String XML_NS = XMLConstants.XML_NS_URI;
     public static final String LINK_NS = "http://www.xbrl.org/2003/linkbase";
     public static final String XL_NS = "http://www.xbrl.org/2003/XLink";
     public static final String XLINK_NS = "http://www.w3.org/1999/xlink";
@@ -143,4 +145,6 @@ public class Names {
     public static final QName XLINK_TITLE_QNAME = new QName(XLINK_NS, "title");
     public static final QName XLINK_TO_QNAME = new QName(XLINK_NS, "to");
     public static final QName XLINK_TYPE_QNAME = new QName(XLINK_NS, "type");
+
+    public static final QName XML_BASE_QNAME = new QName(XML_NS, "base");
 }

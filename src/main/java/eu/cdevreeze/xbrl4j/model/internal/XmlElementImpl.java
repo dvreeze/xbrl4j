@@ -47,7 +47,6 @@ public abstract class XmlElementImpl implements XmlElement {
         this.xmlElementCreator = xmlElementCreator;
     }
 
-    @Override
     public AncestryAwareElementApi<?> underlyingElement() {
         return underlyingElement;
     }
