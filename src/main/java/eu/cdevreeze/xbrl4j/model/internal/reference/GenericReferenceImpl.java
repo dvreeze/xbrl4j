@@ -17,12 +17,12 @@
 package eu.cdevreeze.xbrl4j.model.internal.reference;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.Part;
 import eu.cdevreeze.xbrl4j.model.reference.GenericReference;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,8 +37,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 public class GenericReferenceImpl extends XmlElementImpl implements GenericReference {
 
     public GenericReferenceImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

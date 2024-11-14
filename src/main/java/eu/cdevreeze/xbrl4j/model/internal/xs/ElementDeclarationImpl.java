@@ -16,10 +16,10 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.xs;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.xs.ElementDeclaration;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
 import java.util.Optional;
@@ -36,8 +36,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.SUBSTITUTION_GROUP_QNAME;
 public class ElementDeclarationImpl extends XmlElementImpl implements ElementDeclaration {
 
     public ElementDeclarationImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

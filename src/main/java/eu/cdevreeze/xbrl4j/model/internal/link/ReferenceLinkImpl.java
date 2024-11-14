@@ -17,6 +17,7 @@
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
@@ -25,7 +26,6 @@ import eu.cdevreeze.xbrl4j.model.link.Reference;
 import eu.cdevreeze.xbrl4j.model.link.ReferenceArc;
 import eu.cdevreeze.xbrl4j.model.link.ReferenceLink;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -40,8 +40,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 public class ReferenceLinkImpl extends XmlElementImpl implements ReferenceLink {
 
     public ReferenceLinkImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

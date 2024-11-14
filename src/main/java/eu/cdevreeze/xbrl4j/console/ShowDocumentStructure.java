@@ -18,6 +18,7 @@ package eu.cdevreeze.xbrl4j.console;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import eu.cdevreeze.xbrl4j.common.dom.DefaultAncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.factory.XmlElementFactory;
@@ -59,7 +60,8 @@ public class ShowDocumentStructure {
                 .plus(new QName(sbrNs, "presentationTuple"), XBRLI_TUPLE_QNAME)
                 .plus(new QName(sbrNs, "specificationTuple"), XBRLI_TUPLE_QNAME);
         XmlElementFactory xmlElementFactory = new XmlElementFactory(schemaContext);
-        XmlElement xmlElement = xmlElementFactory.createXmlElement(doc.documentElement());
+        XmlElement xmlElement = xmlElementFactory
+                .createXmlElement(new DefaultAncestryAwareElement(doc.documentElement()));
 
         NamespaceScope namespaceScope =
                 PushUpNamespaceDeclarations.pushUpNamespaceDeclarations(

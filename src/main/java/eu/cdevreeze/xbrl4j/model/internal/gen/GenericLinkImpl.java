@@ -17,6 +17,7 @@
 package eu.cdevreeze.xbrl4j.model.internal.gen;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.gen.GenericArc;
 import eu.cdevreeze.xbrl4j.model.gen.GenericLink;
@@ -25,7 +26,6 @@ import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xl.XlResource;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -40,8 +40,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 public class GenericLinkImpl extends XmlElementImpl implements GenericLink {
 
     public GenericLinkImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

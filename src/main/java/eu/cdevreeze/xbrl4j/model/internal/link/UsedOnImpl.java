@@ -16,10 +16,10 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.link.UsedOn;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.function.Function;
 
@@ -31,8 +31,8 @@ import java.util.function.Function;
 public class UsedOnImpl extends XmlElementImpl implements UsedOn {
 
     public UsedOnImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

@@ -16,9 +16,9 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.xs;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.function.Function;
 
@@ -30,8 +30,8 @@ import java.util.function.Function;
 public class ItemDeclarationImpl extends ElementDeclarationImpl implements ItemDeclaration {
 
     public ItemDeclarationImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

@@ -16,10 +16,10 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.xl;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.xl.XlResource;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,8 +34,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 public class OtherXlResourceImpl extends XmlElementImpl implements XlResource {
 
     public OtherXlResourceImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

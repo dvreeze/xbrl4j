@@ -17,9 +17,9 @@
 package eu.cdevreeze.xbrl4j.model.internal;
 
 import com.google.common.collect.ImmutableMap;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
 import java.util.Optional;
@@ -34,20 +34,20 @@ import java.util.stream.Stream;
  */
 public abstract class XmlElementImpl implements XmlElement {
 
-    private final AncestryAwareElementApi<?> underlyingElement;
+    private final AncestryAwareElement<?> underlyingElement;
 
     // Must be very fast!
-    private final Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator;
+    private final Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator;
 
     public XmlElementImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         this.underlyingElement = underlyingElement;
         this.xmlElementCreator = xmlElementCreator;
     }
 
-    public AncestryAwareElementApi<?> underlyingElement() {
+    public AncestryAwareElement<?> underlyingElement() {
         return underlyingElement;
     }
 
@@ -160,8 +160,11 @@ public abstract class XmlElementImpl implements XmlElement {
 
     @Override
     public Stream<XmlElement> elementStream() {
-        return underlyingElement.elementStream()
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.elementStream();
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
@@ -171,15 +174,22 @@ public abstract class XmlElementImpl implements XmlElement {
 
     @Override
     public Stream<XmlElement> topmostElementStream(Predicate<? super XmlElement> predicate) {
-        return underlyingElement
-                .topmostElementStream(e -> predicate.test(xmlElementCreator.apply(e)))
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.topmostElementStream(
+                        e -> predicate.test(xmlElementCreator.apply((AncestryAwareElement<?>) e))
+                );
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
     public Stream<XmlElement> childElementStream() {
-        return underlyingElement.childElementStream()
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.childElementStream();
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
@@ -189,8 +199,11 @@ public abstract class XmlElementImpl implements XmlElement {
 
     @Override
     public Stream<XmlElement> descendantElementOrSelfStream() {
-        return underlyingElement.descendantElementOrSelfStream()
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.descendantElementOrSelfStream();
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
@@ -200,8 +213,11 @@ public abstract class XmlElementImpl implements XmlElement {
 
     @Override
     public Stream<XmlElement> descendantElementStream() {
-        return underlyingElement.descendantElementStream()
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.descendantElementStream();
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
@@ -211,15 +227,23 @@ public abstract class XmlElementImpl implements XmlElement {
 
     @Override
     public Stream<XmlElement> topmostDescendantElementOrSelfStream(Predicate<? super XmlElement> predicate) {
-        return underlyingElement
-                .topmostDescendantElementOrSelfStream(e -> predicate.test(xmlElementCreator.apply(e)))
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.topmostDescendantElementOrSelfStream(
+                        e -> predicate.test(xmlElementCreator.apply((AncestryAwareElement<?>) e))
+                );
+
+        return elemStream.map(xmlElementCreator);
     }
 
     @Override
     public Stream<XmlElement> topmostDescendantElementStream(Predicate<? super XmlElement> predicate) {
-        return underlyingElement
-                .topmostDescendantElementStream(e -> predicate.test(xmlElementCreator.apply(e)))
-                .map(xmlElementCreator);
+        @SuppressWarnings("unchecked")
+        Stream<AncestryAwareElement<?>> elemStream =
+                (Stream<AncestryAwareElement<?>>) underlyingElement.topmostDescendantElementStream(
+                        e -> predicate.test(xmlElementCreator.apply((AncestryAwareElement<?>) e))
+                );
+
+        return elemStream.map(xmlElementCreator);
     }
 }

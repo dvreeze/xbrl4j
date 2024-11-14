@@ -17,11 +17,11 @@
 package eu.cdevreeze.xbrl4j.model.internal.xl;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.xl.XlArc;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -36,8 +36,8 @@ import java.util.function.Function;
 public class OtherXlArcImpl extends XmlElementImpl implements XlArc {
 
     public OtherXlArcImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

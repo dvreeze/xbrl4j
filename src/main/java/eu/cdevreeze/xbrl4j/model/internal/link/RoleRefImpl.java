@@ -16,11 +16,11 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.RoleRef;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.net.URI;
 import java.util.Optional;
@@ -36,8 +36,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ROLE_URI_QNAME;
 public class RoleRefImpl extends XmlElementImpl implements RoleRef {
 
     public RoleRefImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

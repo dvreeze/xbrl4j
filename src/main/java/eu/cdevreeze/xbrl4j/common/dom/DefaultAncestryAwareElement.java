@@ -50,6 +50,11 @@ public class DefaultAncestryAwareElement implements AncestryAwareElement<Default
         return underlyingElement;
     }
 
+    @Override
+    public NamespaceScope namespaceScope() {
+        return underlyingElement.namespaceScopeOption().orElseThrow();
+    }
+
     // Note that now we do not have a wildcard that cannot be captured in XmlBaseResolver
 
     @Override

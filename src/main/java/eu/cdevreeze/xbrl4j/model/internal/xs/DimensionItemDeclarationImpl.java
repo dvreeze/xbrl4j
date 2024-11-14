@@ -16,9 +16,9 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.xs;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.xs.DimensionItemDeclaration;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.util.function.Function;
 
@@ -30,8 +30,8 @@ import java.util.function.Function;
 public class DimensionItemDeclarationImpl extends ItemDeclarationImpl implements DimensionItemDeclaration {
 
     public DimensionItemDeclarationImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

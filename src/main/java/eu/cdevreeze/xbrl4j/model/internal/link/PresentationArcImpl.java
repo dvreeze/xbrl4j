@@ -17,12 +17,12 @@
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.PresentationArc;
 import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -39,8 +39,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.PREFERRED_LABEL_QNAME;
 public class PresentationArcImpl extends XmlElementImpl implements PresentationArc {
 
     public PresentationArcImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

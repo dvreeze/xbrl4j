@@ -18,6 +18,7 @@ package eu.cdevreeze.xbrl4j.common.dom;
 
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
+import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.net.URI;
@@ -29,13 +30,17 @@ import java.util.function.BiFunction;
  * These elements are used as underlying elements of the XBRL model.
  * They can even be used with wildcards for the self type, without having to know the exact self type.
  * <p>
- * The extra element wrapping layer does increase memory footprint.
+ * The extra element wrapping layer does increase memory footprint. On the other hand, as opposed to
+ * plain "AncestryAwareElement", it offers xml:base support and XPointer support for "underlying"
+ * elements without any knowledge of the exact element type.
  *
  * @author Chris de Vreeze
  */
 public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> extends AncestryAwareElementApi<E> {
 
     AncestryAwareElementApi<?> underlyingElement();
+
+    NamespaceScope namespaceScope();
 
     // xml:base (see XmlBaseResolver)
 

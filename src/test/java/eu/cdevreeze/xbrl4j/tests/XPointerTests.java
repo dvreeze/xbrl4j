@@ -17,6 +17,7 @@
 package eu.cdevreeze.xbrl4j.tests;
 
 import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.xbrl4j.common.dom.DefaultAncestryAwareElement;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
@@ -28,7 +29,6 @@ import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.yaidom4j.dom.ancestryaware.Document;
-import eu.cdevreeze.yaidom4j.dom.ancestryaware.ElementTree;
 import eu.cdevreeze.yaidom4j.dom.immutabledom.jaxpinterop.DocumentParsers;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 import org.junit.jupiter.api.Test;
@@ -72,8 +72,10 @@ public class XPointerTests {
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
 
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(schemaDoc.documentElement()).orElseThrow();
+        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
+                new DefaultAncestryAwareElement(linkbaseDoc.documentElement())).orElseThrow();
+        Schema schema = elementFactory.optionallyCreateSchema(
+                new DefaultAncestryAwareElement(schemaDoc.documentElement())).orElseThrow();
 
         Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa2")).findFirst();
 
@@ -92,7 +94,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointer).map(ElementApi::elementName),
+                ((SchemaImpl) schema).underlyingElement().findElement(xpointer).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointer).map(ElementApi::elementName)
         );
 
@@ -116,8 +118,10 @@ public class XPointerTests {
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
 
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(schemaDoc.documentElement()).orElseThrow();
+        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
+                new DefaultAncestryAwareElement(linkbaseDoc.documentElement())).orElseThrow();
+        Schema schema = elementFactory.optionallyCreateSchema(
+                new DefaultAncestryAwareElement(schemaDoc.documentElement())).orElseThrow();
 
         Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class).findFirst();
 
@@ -136,7 +140,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointer).map(ElementApi::elementName),
+                ((SchemaImpl) schema).underlyingElement().findElement(xpointer).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointer).map(ElementApi::elementName)
         );
 
@@ -160,8 +164,10 @@ public class XPointerTests {
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
 
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(schemaDoc.documentElement()).orElseThrow();
+        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
+                new DefaultAncestryAwareElement(linkbaseDoc.documentElement())).orElseThrow();
+        Schema schema = elementFactory.optionallyCreateSchema(
+                new DefaultAncestryAwareElement(schemaDoc.documentElement())).orElseThrow();
 
         Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class).findFirst();
 
@@ -180,7 +186,7 @@ public class XPointerTests {
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointers);
 
         assertEquals(
-                XPointers.findElement((ElementTree.Element) ((SchemaImpl) schema).underlyingElement(), xpointers).map(ElementApi::elementName),
+                ((SchemaImpl) schema).underlyingElement().findElement(xpointers).map(ElementApi::elementName),
                 XPointers.findElement(schema, xpointers).map(ElementApi::elementName)
         );
 

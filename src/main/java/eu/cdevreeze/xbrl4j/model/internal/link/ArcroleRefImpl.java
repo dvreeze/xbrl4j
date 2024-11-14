@@ -16,11 +16,11 @@
 
 package eu.cdevreeze.xbrl4j.model.internal.link;
 
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.XmlElementImpl;
 import eu.cdevreeze.xbrl4j.model.internal.xl.XLinkSupport;
 import eu.cdevreeze.xbrl4j.model.link.ArcroleRef;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.net.URI;
 import java.util.Optional;
@@ -36,8 +36,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ARCROLE_URI_QNAME;
 public class ArcroleRefImpl extends XmlElementImpl implements ArcroleRef {
 
     public ArcroleRefImpl(
-            AncestryAwareElementApi<?> underlyingElement,
-            Function<AncestryAwareElementApi<?>, XmlElement> xmlElementCreator
+            AncestryAwareElement<?> underlyingElement,
+            Function<AncestryAwareElement<?>, XmlElement> xmlElementCreator
     ) {
         super(underlyingElement, xmlElementCreator);
     }

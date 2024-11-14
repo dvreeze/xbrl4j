@@ -18,6 +18,7 @@ package eu.cdevreeze.xbrl4j.model.factory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import eu.cdevreeze.xbrl4j.common.dom.AncestryAwareElement;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.gen.GenElement;
 import eu.cdevreeze.xbrl4j.model.internal.OtherXmlElementImpl;
@@ -45,7 +46,6 @@ import eu.cdevreeze.xbrl4j.model.xl.XlResource;
 import eu.cdevreeze.xbrl4j.model.xs.ElementDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.xbrl4j.model.xs.SchemaElement;
-import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import javax.xml.namespace.QName;
 import java.util.Optional;
@@ -64,25 +64,25 @@ public class XmlElementFactory {
 
     private final SchemaContext schemaContext;
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> schemaElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, SchemaElement>> schemaElementCreators =
             createSchemaElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> linkElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, LinkElement>> linkElementCreators =
             createLinkElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, RefElement>> refElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, RefElement>> refElementCreators =
             createRefElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, GenElement>> genElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, GenElement>> genElementCreators =
             createGenElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LabelElement>> labelElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, LabelElement>> labelElementCreators =
             createLabelElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, ReferenceElement>> referenceElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, ReferenceElement>> referenceElementCreators =
             createReferenceElementCreatorMap();
 
-    private final ImmutableMap<QName, Function<AncestryAwareElementApi<?>, XmlElement>> commonlyUsedElementCreators =
+    private final ImmutableMap<QName, Function<AncestryAwareElement<?>, XmlElement>> commonlyUsedElementCreators =
             createCommonlyUsedElementCreatorMap();
 
     public XmlElementFactory(SchemaContext schemaContext) {
@@ -93,7 +93,7 @@ public class XmlElementFactory {
         return schemaContext;
     }
 
-    public XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement) {
+    public XmlElement createXmlElement(AncestryAwareElement<?> underlyingElement) {
         Optional<XmlElement> optionalCommonlyUsedElement =
                 Optional.ofNullable(commonlyUsedElementCreators.get(underlyingElement.elementName()))
                         .map(f -> f.apply(underlyingElement));
@@ -108,7 +108,7 @@ public class XmlElementFactory {
         return createXmlElement(underlyingElement, sgsOrSelf);
     }
 
-    public XmlElement createXmlElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public XmlElement createXmlElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreateXmlElement(underlyingElement, substitutionGroupsOrSelf)
                 .or(() -> optionallyCreateOtherXlArc(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
                 .or(() -> optionallyCreateOtherXlLink(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
@@ -118,7 +118,7 @@ public class XmlElementFactory {
                 );
     }
 
-    public Optional<XmlElement> optionallyCreateXmlElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<XmlElement> optionallyCreateXmlElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreateSchemaElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e)
                 .or(() -> optionallyCreateRefElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
                 .or(() -> optionallyCreateLabelElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e))
@@ -127,7 +127,7 @@ public class XmlElementFactory {
                 .or(() -> optionallyCreateLinkElement(underlyingElement, substitutionGroupsOrSelf).map(e -> (XmlElement) e));
     }
 
-    public Optional<SchemaElement> optionallyCreateSchemaElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<SchemaElement> optionallyCreateSchemaElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         if (underlyingElement.elementName().getNamespaceURI().equals(XS_NS)) {
             return Optional.ofNullable(schemaElementCreators.get(underlyingElement.elementName()))
                     .map(f -> f.apply(underlyingElement))
@@ -137,7 +137,7 @@ public class XmlElementFactory {
         }
     }
 
-    public Optional<LinkElement> optionallyCreateLinkElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<LinkElement> optionallyCreateLinkElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreate(
                 underlyingElement,
                 substitutionGroupsOrSelf,
@@ -147,7 +147,7 @@ public class XmlElementFactory {
         );
     }
 
-    public Optional<RefElement> optionallyCreateRefElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<RefElement> optionallyCreateRefElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreate(
                 underlyingElement,
                 substitutionGroupsOrSelf,
@@ -157,7 +157,7 @@ public class XmlElementFactory {
         );
     }
 
-    public Optional<GenElement> optionallyCreateGenElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<GenElement> optionallyCreateGenElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreate(
                 underlyingElement,
                 substitutionGroupsOrSelf,
@@ -167,7 +167,7 @@ public class XmlElementFactory {
         );
     }
 
-    public Optional<LabelElement> optionallyCreateLabelElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<LabelElement> optionallyCreateLabelElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreate(
                 underlyingElement,
                 substitutionGroupsOrSelf,
@@ -177,7 +177,7 @@ public class XmlElementFactory {
         );
     }
 
-    public Optional<ReferenceElement> optionallyCreateReferenceElement(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<ReferenceElement> optionallyCreateReferenceElement(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreate(
                 underlyingElement,
                 substitutionGroupsOrSelf,
@@ -187,7 +187,7 @@ public class XmlElementFactory {
         );
     }
 
-    public Optional<ElementDeclaration> optionallyCreateElementDeclaration(AncestryAwareElementApi<?> underlyingElement) {
+    public Optional<ElementDeclaration> optionallyCreateElementDeclaration(AncestryAwareElement<?> underlyingElement) {
         return Optional.of(underlyingElement)
                 .filter(e -> e.elementName().equals(XS_ELEMENT_QNAME))
                 .map(e -> {
@@ -212,29 +212,29 @@ public class XmlElementFactory {
                 });
     }
 
-    public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement) {
+    public Optional<Schema> optionallyCreateSchema(AncestryAwareElement<?> underlyingElement) {
         Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
         return optionallyCreateSchema(underlyingElement, sgsOrSelf);
     }
 
-    public Optional<Schema> optionallyCreateSchema(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<Schema> optionallyCreateSchema(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreateSchemaElement(underlyingElement, substitutionGroupsOrSelf)
                 .filter(e -> e instanceof Schema)
                 .map(e -> (Schema) e);
     }
 
-    public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElementApi<?> underlyingElement) {
+    public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElement<?> underlyingElement) {
         Set<QName> sgsOrSelf = schemaContext().findSubstitutionGroupsOrSelf(underlyingElement.elementName());
         return optionallyCreateLinkbase(underlyingElement, sgsOrSelf);
     }
 
-    public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    public Optional<Linkbase> optionallyCreateLinkbase(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         return optionallyCreateLinkElement(underlyingElement, substitutionGroupsOrSelf)
                 .filter(e -> e instanceof Linkbase)
                 .map(e -> (Linkbase) e);
     }
 
-    private Optional<XlArc> optionallyCreateOtherXlArc(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    private Optional<XlArc> optionallyCreateOtherXlArc(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_ARC_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
@@ -246,7 +246,7 @@ public class XmlElementFactory {
         }
     }
 
-    private Optional<XlExtendedLink> optionallyCreateOtherXlLink(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    private Optional<XlExtendedLink> optionallyCreateOtherXlLink(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_EXTENDED_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
@@ -258,7 +258,7 @@ public class XmlElementFactory {
         }
     }
 
-    private Optional<XlResource> optionallyCreateOtherXlResource(AncestryAwareElementApi<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
+    private Optional<XlResource> optionallyCreateOtherXlResource(AncestryAwareElement<?> underlyingElement, Set<QName> substitutionGroupsOrSelf) {
         Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.equals(XL_RESOURCE_QNAME)).findFirst();
 
         if (sgOrSelfOption.isEmpty()) {
@@ -271,11 +271,11 @@ public class XmlElementFactory {
     }
 
     private <T extends XmlElement> Optional<T> optionallyCreate(
-            AncestryAwareElementApi<?> underlyingElement,
+            AncestryAwareElement<?> underlyingElement,
             Set<QName> substitutionGroupsOrSelf,
             String targetNamespace,
-            ImmutableMap<QName, Function<AncestryAwareElementApi<?>, T>> elementCreatorMap,
-            Function<AncestryAwareElementApi<?>, T> fallbackElementCreator
+            ImmutableMap<QName, Function<AncestryAwareElement<?>, T>> elementCreatorMap,
+            Function<AncestryAwareElement<?>, T> fallbackElementCreator
     ) {
         Optional<QName> sgOrSelfOption = substitutionGroupsOrSelf.stream().filter(n -> n.getNamespaceURI().equals(targetNamespace)).findFirst();
 
@@ -290,8 +290,8 @@ public class XmlElementFactory {
         }
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> createSchemaElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, SchemaElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, SchemaElement>> createSchemaElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, SchemaElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(XS_ELEMENT_QNAME, e -> optionallyCreateElementDeclaration(e).orElseThrow());
         builder.put(XS_ATTRIBUTE_QNAME, e -> new AttributeDeclarationImpl(e, this::createXmlElement));
@@ -307,8 +307,8 @@ public class XmlElementFactory {
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LinkElement>> createLinkElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, LinkElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, LinkElement>> createLinkElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, LinkElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(LINK_ARCROLE_REF_QNAME, e -> new ArcroleRefImpl(e, this::createXmlElement));
         builder.put(LINK_ARCROLE_TYPE_QNAME, e -> new ArcroleTypeImpl(e, this::createXmlElement));
@@ -339,8 +339,8 @@ public class XmlElementFactory {
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, RefElement>> createRefElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, RefElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, RefElement>> createRefElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, RefElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(REF_APPENDIX_QNAME, e -> new RefAppendixImpl(e, this::createXmlElement));
         builder.put(REF_ARTICLE_QNAME, e -> new RefArticleImpl(e, this::createXmlElement));
@@ -366,30 +366,30 @@ public class XmlElementFactory {
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, GenElement>> createGenElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, GenElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, GenElement>> createGenElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, GenElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(GEN_ARC_QNAME, e -> new GenericArcImpl(e, this::createXmlElement));
         builder.put(GEN_LINK_QNAME, e -> new GenericLinkImpl(e, this::createXmlElement));
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, LabelElement>> createLabelElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, LabelElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, LabelElement>> createLabelElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, LabelElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(LABEL_LABEL_QNAME, e -> new GenericLabelImpl(e, this::createXmlElement));
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, ReferenceElement>> createReferenceElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, ReferenceElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, ReferenceElement>> createReferenceElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, ReferenceElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(REFERENCE_REFERENCE_QNAME, e -> new GenericReferenceImpl(e, this::createXmlElement));
         return builder.build();
     }
 
-    private ImmutableMap<QName, Function<AncestryAwareElementApi<?>, XmlElement>> createCommonlyUsedElementCreatorMap() {
-        ImmutableMap.Builder<QName, Function<AncestryAwareElementApi<?>, XmlElement>> builder =
+    private ImmutableMap<QName, Function<AncestryAwareElement<?>, XmlElement>> createCommonlyUsedElementCreatorMap() {
+        ImmutableMap.Builder<QName, Function<AncestryAwareElement<?>, XmlElement>> builder =
                 new ImmutableMap.Builder<>();
         builder.put(XS_ELEMENT_QNAME, e -> optionallyCreateElementDeclaration(e).orElseThrow());
         builder.put(XS_SCHEMA_QNAME, e -> new SchemaImpl(e, this::createXmlElement));
@@ -420,7 +420,7 @@ public class XmlElementFactory {
         return builder.build();
     }
 
-    private static Optional<QName> substitutionGroupOption(AncestryAwareElementApi<?> element) {
+    private static Optional<QName> substitutionGroupOption(AncestryAwareElement<?> element) {
         Optional<String> syntacticQNameOption = element.attributeOption(SUBSTITUTION_GROUP_QNAME);
         return syntacticQNameOption
                 .map(n -> element.namespaceScopeOption().orElseThrow().resolveSyntacticElementQName(n));
