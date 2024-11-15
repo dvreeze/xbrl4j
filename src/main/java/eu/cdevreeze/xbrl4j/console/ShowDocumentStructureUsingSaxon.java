@@ -34,7 +34,6 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 
 import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import java.net.URI;
 import java.util.Objects;
@@ -50,7 +49,7 @@ import static eu.cdevreeze.xbrl4j.model.Names.*;
  */
 public class ShowDocumentStructureUsingSaxon {
 
-    public static void main(String[] args) throws SaxonApiException, TransformerException {
+    public static void main(String[] args) throws SaxonApiException {
         Objects.checkIndex(0, args.length);
         URI docUri = URI.create(args[0]);
 
@@ -72,6 +71,7 @@ public class ShowDocumentStructureUsingSaxon {
         XmlElement xmlElement = xmlElementFactory
                 .createXmlElement(doc.documentElement());
 
+        // This is one way to convert Saxon to native yaidom4j, namely via DOM wrapping over Saxon
         org.w3c.dom.Document w3cDomDoc = (org.w3c.dom.Document) NodeOverNodeInfo.wrap(doc.xdmNode().getUnderlyingNode());
         Document nativeDoc = JaxpDomToImmutableDomConverter.convertDocument(w3cDomDoc);
 
