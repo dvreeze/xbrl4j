@@ -27,7 +27,8 @@ import eu.cdevreeze.xbrl4j.model.link.UsedOn;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static eu.cdevreeze.xbrl4j.model.Names.*;
+import static eu.cdevreeze.xbrl4j.model.Names.ARCROLE_URI_QNAME;
+import static eu.cdevreeze.xbrl4j.model.Names.CYCLES_ALLOWED_QNAME;
 
 /**
  * Implementation of ArcroleType.
@@ -56,11 +57,6 @@ public class ArcroleTypeImpl extends XmlElementImpl implements ArcroleType {
     @Override
     public String arcroleUri() {
         return attribute(ARCROLE_URI_QNAME);
-    }
-
-    @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
     }
 
     @Override

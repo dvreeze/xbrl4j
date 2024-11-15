@@ -19,8 +19,6 @@ package eu.cdevreeze.xbrl4j.model.link;
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.model.xl.XlExtendedLink;
 
-import java.util.Optional;
-
 /**
  * Any "link:linkbase" element in the context of XBRL. See schema xbrl-linkbase-2003-12-31.xsd, which has target namespace
  * "http://www.xbrl.org/2003/linkbase".
@@ -34,6 +32,4 @@ public interface Linkbase extends LinkElement {
     ImmutableList<? extends ArcroleRef> arcroleRefs();
 
     ImmutableList<? extends XlExtendedLink> extendedLinks();
-
-    Optional<String> idOption();
 }

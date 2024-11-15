@@ -25,10 +25,7 @@ import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.RoleRef;
 import eu.cdevreeze.xbrl4j.model.xl.XlExtendedLink;
 
-import java.util.Optional;
 import java.util.function.Function;
-
-import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
 /**
  * Implementation of Linkbase.
@@ -57,10 +54,5 @@ public class LinkbaseImpl extends XmlElementImpl implements Linkbase {
     @Override
     public ImmutableList<? extends XlExtendedLink> extendedLinks() {
         return childElementStream(XlExtendedLink.class).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
     }
 }

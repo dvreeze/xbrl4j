@@ -87,6 +87,11 @@ public final class ElementTree {
         // Note that now we do not have a wildcard that cannot be captured in XmlBaseResolver
 
         @Override
+        public Optional<URI> findBaseUri(Optional<URI> docUriOption) {
+            return new XmlBaseResolver().findBaseUri(this, docUriOption);
+        }
+
+        @Override
         public Optional<URI> findBaseUri(Optional<URI> docUriOption, BiFunction<Optional<URI>, URI, URI> uriResolver) {
             return new XmlBaseResolver(uriResolver).findBaseUri(this, docUriOption);
         }

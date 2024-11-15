@@ -17,7 +17,7 @@
 package eu.cdevreeze.xbrl4j.tests;
 
 import com.google.common.collect.ImmutableList;
-import eu.cdevreeze.xbrl4j.common.dom.defaultimpl.Document;
+import eu.cdevreeze.xbrl4j.common.dom.saxon.SaxonDocument;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
@@ -28,10 +28,13 @@ import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
-import eu.cdevreeze.yaidom4j.dom.immutabledom.jaxpinterop.DocumentParsers;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.transform.stream.StreamSource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -40,18 +43,20 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests related to XPointer. Not a unit test. Inspired by and using the XBRL conformance suite.
+ * Tests related to XPointer, using Saxon. Not a unit test. Inspired by and using the XBRL conformance suite.
  *
  * @author Chris de Vreeze
  */
-public class XPointerTests {
+public class SaxonBasedXPointerTests {
+
+    private static final Processor processor = new Processor(false);
 
     private static final URI confSuiteRootDir;
 
     static {
         try {
             confSuiteRootDir =
-                    Objects.requireNonNull(XPointerTests.class.getResource(
+                    Objects.requireNonNull(SaxonBasedXPointerTests.class.getResource(
                             "/conformancesuite/unzipped/XBRL-CONF-2014-12-10/")).toURI();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -59,13 +64,15 @@ public class XPointerTests {
     }
 
     @Test
-    public void testIdPointerUse() {
+    public void testIdPointerUse() throws SaxonApiException {
+        DocumentBuilder docBuilder = processor.newDocumentBuilder();
+
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
+        SaxonDocument linkbaseDoc = new SaxonDocument(docBuilder.build(new StreamSource(linkbaseUri.toString())))
                 .withUri(linkbaseUri);
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
+        SaxonDocument schemaDoc = new SaxonDocument(docBuilder.build(new StreamSource(schemaUri.toString())))
                 .withUri(schemaUri);
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
@@ -76,8 +83,7 @@ public class XPointerTests {
         Schema schema = elementFactory.optionallyCreateSchema(
                 schemaDoc.documentElement()).orElseThrow();
 
-        Optional<Loc> locOption =
-                linkbase.descendantElementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa2")).findFirst();
+        Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa2")).findFirst();
 
         assertTrue(locOption.isPresent());
         Loc loc = locOption.get();
@@ -106,13 +112,15 @@ public class XPointerTests {
     }
 
     @Test
-    public void testChildSequencePointerUse() {
+    public void testChildSequencePointerUse() throws SaxonApiException {
+        DocumentBuilder docBuilder = processor.newDocumentBuilder();
+
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
+        SaxonDocument linkbaseDoc = new SaxonDocument(docBuilder.build(new StreamSource(linkbaseUri.toString())))
                 .withUri(linkbaseUri);
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
+        SaxonDocument schemaDoc = new SaxonDocument(docBuilder.build(new StreamSource(schemaUri.toString())))
                 .withUri(schemaUri);
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
@@ -152,13 +160,15 @@ public class XPointerTests {
     }
 
     @Test
-    public void testMultiplePointersUse() {
+    public void testMultiplePointersUse() throws SaxonApiException {
+        DocumentBuilder docBuilder = processor.newDocumentBuilder();
+
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
+        SaxonDocument linkbaseDoc = new SaxonDocument(docBuilder.build(new StreamSource(linkbaseUri.toString())))
                 .withUri(linkbaseUri);
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
+        SaxonDocument schemaDoc = new SaxonDocument(docBuilder.build(new StreamSource(schemaUri.toString())))
                 .withUri(schemaUri);
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();

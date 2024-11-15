@@ -29,8 +29,6 @@ import eu.cdevreeze.xbrl4j.model.xl.XlTitle;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
-
 /**
  * Implementation of "non-standard" XlExtendedLink.
  *
@@ -58,11 +56,6 @@ public class OtherXlExtendedLinkImpl extends XmlElementImpl implements XlExtende
     @Override
     public Optional<String> titleOption() {
         return XLinkSupport.titleOption(underlyingElement());
-    }
-
-    @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
     }
 
     @Override

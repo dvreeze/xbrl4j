@@ -25,8 +25,6 @@ import eu.cdevreeze.xbrl4j.model.label.GenericLabel;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
-
 /**
  * Implementation of GenericLabel.
  *
@@ -59,11 +57,6 @@ public class GenericLabelImpl extends XmlElementImpl implements GenericLabel {
     @Override
     public Optional<String> titleOption() {
         return XLinkSupport.titleOption(underlyingElement());
-    }
-
-    @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
     }
 
     @Override

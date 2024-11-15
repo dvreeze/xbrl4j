@@ -27,7 +27,6 @@ import eu.cdevreeze.xbrl4j.model.link.UsedOn;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 import static eu.cdevreeze.xbrl4j.model.Names.ROLE_URI_QNAME;
 
 /**
@@ -57,10 +56,5 @@ public class RoleTypeImpl extends XmlElementImpl implements RoleType {
     @Override
     public String roleUri() {
         return attribute(ROLE_URI_QNAME);
-    }
-
-    @Override
-    public Optional<String> idOption() {
-        return attributeOption(ID_QNAME);
     }
 }

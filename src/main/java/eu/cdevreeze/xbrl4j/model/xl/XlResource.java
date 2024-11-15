@@ -33,6 +33,4 @@ public interface XlResource extends XlElement {
     Optional<String> roleOption();
 
     Optional<String> titleOption();
-
-    Optional<String> idOption();
 }

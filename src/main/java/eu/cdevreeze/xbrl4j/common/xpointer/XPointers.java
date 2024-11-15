@@ -20,9 +20,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 
+import javax.xml.namespace.QName;
 import java.util.Optional;
-
-import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
 
 /**
  * Utility class for XPointer processing.
@@ -30,6 +29,8 @@ import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
  * @author Chris de Vreeze
  */
 public class XPointers {
+
+    private static final QName ID_QNAME = new QName("id");
 
     private XPointers() {
     }

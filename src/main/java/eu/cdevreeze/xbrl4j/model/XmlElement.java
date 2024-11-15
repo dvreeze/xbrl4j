@@ -19,6 +19,7 @@ package eu.cdevreeze.xbrl4j.model;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -36,6 +37,8 @@ import java.util.stream.Stream;
 public interface XmlElement extends ElementApi<XmlElement> {
 
     NamespaceScope namespaceScope();
+
+    Optional<String> idOption();
 
     /**
      * Alias of descendantElementOrSelfStream

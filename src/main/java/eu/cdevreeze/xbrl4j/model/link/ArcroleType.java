@@ -35,8 +35,6 @@ public interface ArcroleType extends LinkElement {
 
     String arcroleUri();
 
-    Optional<String> idOption();
-
     CyclesAllowed cyclesAllowed();
 
     enum CyclesAllowed {

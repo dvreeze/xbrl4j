@@ -18,6 +18,8 @@ package eu.cdevreeze.xbrl4j.common.xmlbase;
 
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +27,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static eu.cdevreeze.xbrl4j.model.Names.XML_BASE_QNAME;
-
 /**
  * Resolver of xml:base attributes in an (ancestry-aware) element node.
  *
  * @author Chris de Vreeze
  */
 public final class XmlBaseResolver {
+
+    private static final QName XML_BASE_QNAME = new QName(XMLConstants.XML_NS_URI, "base");
 
     /**
      * BiFunction taking an optional base URI and a URI to resolve against it (if present), returning the result URI

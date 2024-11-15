@@ -47,6 +47,8 @@ public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> exte
 
     // xml:base (see XmlBaseResolver)
 
+    Optional<URI> findBaseUri(Optional<URI> docUriOption);
+
     Optional<URI> findBaseUri(Optional<URI> docUriOption, BiFunction<Optional<URI>, URI, URI> uriResolver);
 
     // XPointer

@@ -22,6 +22,8 @@ import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 
+import java.net.URI;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -61,5 +63,15 @@ public final class SaxonDocument {
                     default -> Stream.empty();
                 })
                 .collect(ImmutableList.toImmutableList());
+    }
+
+    public Optional<URI> uriOption() {
+        return Optional.ofNullable(xdmNode.getUnderlyingNode().getSystemId()).map(URI::create);
+    }
+
+    public SaxonDocument withUri(URI uri) {
+        var nodeInfo = xdmNode.getUnderlyingNode();
+        nodeInfo.setSystemId(uri.toString());
+        return new SaxonDocument(new XdmNode(nodeInfo));
     }
 }

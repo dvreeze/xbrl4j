@@ -33,6 +33,4 @@ public interface RoleType extends LinkElement {
     ImmutableList<? extends UsedOn> usedOn();
 
     String roleUri();
-
-    Optional<String> idOption();
 }

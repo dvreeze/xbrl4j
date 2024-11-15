@@ -34,8 +34,6 @@ public interface XlExtendedLink extends XlElement {
 
     Optional<String> titleOption();
 
-    Optional<String> idOption();
-
     ImmutableList<? extends XlTitle> titleElements();
 
     ImmutableList<? extends XlLocator> locators();

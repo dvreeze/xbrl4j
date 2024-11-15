@@ -27,6 +27,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static eu.cdevreeze.xbrl4j.model.Names.ID_QNAME;
+
 /**
  * Implementation of XmlElement.
  *
@@ -59,6 +61,11 @@ public abstract class XmlElementImpl implements XmlElement {
     @Override
     public Optional<NamespaceScope> namespaceScopeOption() {
         return underlyingElement().namespaceScopeOption();
+    }
+
+    @Override
+    public Optional<String> idOption() {
+        return attributeOption(ID_QNAME);
     }
 
     @Override
