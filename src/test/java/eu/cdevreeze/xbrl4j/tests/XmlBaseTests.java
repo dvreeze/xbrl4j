@@ -60,12 +60,10 @@ public class XmlBaseTests {
     @Test
     public void testLinkbaseRefXmlBase() throws URISyntaxException {
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/201-03-LinkbaseRefXMLBase.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
-                .withUri(schemaUri);
+        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
 
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/base/201-03-LinkbaseRefXMLBase-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
-                .withUri(linkbaseUri);
+        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
@@ -85,7 +83,7 @@ public class XmlBaseTests {
         assertEquals(URI.create("201-03-LinkbaseRefXMLBase-label.xml"), rawLinkbaseRefUri);
 
         URI baseUri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
-                .findBaseUri(Optional.of(schemaUri))
+                .findBaseUri()
                 .orElseThrow();
 
         assertEquals(schemaUri.resolve("./base/"), baseUri);
@@ -96,7 +94,7 @@ public class XmlBaseTests {
 
         assertEquals(
                 linkbaseUri.resolve("../"),
-                ((LinkbaseImpl) linkbase).underlyingElement().findBaseUri(Optional.of(linkbaseUri)).orElseThrow()
+                ((LinkbaseImpl) linkbase).underlyingElement().findBaseUri().orElseThrow()
         );
 
         Loc firstLocator =
@@ -104,7 +102,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        URI locHrefUri = ((LocImpl) firstLocator).underlyingElement().findBaseUri(Optional.of(linkbaseUri))
+        URI locHrefUri = ((LocImpl) firstLocator).underlyingElement().findBaseUri()
                 .orElseThrow().resolve(firstLocator.xlinkHref());
 
         assertEquals(

@@ -92,7 +92,7 @@ public class SaxonBasedXmlBaseTests {
         assertEquals(URI.create("201-03-LinkbaseRefXMLBase-label.xml"), rawLinkbaseRefUri);
 
         URI baseUri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
-                .findBaseUri(Optional.of(schemaUri))
+                .findBaseUri()
                 .orElseThrow();
 
         assertEquals(schemaUri.resolve("./base/"), baseUri);
@@ -103,7 +103,7 @@ public class SaxonBasedXmlBaseTests {
 
         assertEquals(
                 linkbaseUri.resolve("../"),
-                ((LinkbaseImpl) linkbase).underlyingElement().findBaseUri(Optional.of(linkbaseUri)).orElseThrow()
+                ((LinkbaseImpl) linkbase).underlyingElement().findBaseUri().orElseThrow()
         );
 
         Loc firstLocator =
@@ -111,7 +111,7 @@ public class SaxonBasedXmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        URI locHrefUri = ((LocImpl) firstLocator).underlyingElement().findBaseUri(Optional.of(linkbaseUri))
+        URI locHrefUri = ((LocImpl) firstLocator).underlyingElement().findBaseUri()
                 .orElseThrow().resolve(firstLocator.xlinkHref());
 
         assertEquals(

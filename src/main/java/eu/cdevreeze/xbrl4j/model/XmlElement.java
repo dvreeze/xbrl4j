@@ -19,6 +19,7 @@ package eu.cdevreeze.xbrl4j.model;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -35,6 +36,8 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public interface XmlElement extends ElementApi<XmlElement> {
+
+    Optional<URI> docUriOption();
 
     NamespaceScope namespaceScope();
 

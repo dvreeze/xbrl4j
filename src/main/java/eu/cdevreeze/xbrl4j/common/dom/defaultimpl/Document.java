@@ -43,7 +43,11 @@ public record Document(
     }
 
     public ElementTree.Element documentElement() {
-        return children.stream().filter(n -> n instanceof ElementTree.Element).map(n -> (ElementTree.Element) n).findFirst().orElseThrow();
+        return children.stream()
+                .filter(n -> n instanceof ElementTree.Element)
+                .map(n -> (ElementTree.Element) n)
+                .findFirst()
+                .orElseThrow();
     }
 
     public eu.cdevreeze.yaidom4j.dom.immutabledom.Document underlyingDocument() {
@@ -53,17 +57,13 @@ public record Document(
         );
     }
 
-    public Document withUri(URI uri) {
-        return new Document(Optional.of(uri), children);
-    }
-
     public static Document from(eu.cdevreeze.yaidom4j.dom.immutabledom.Document underlyingDocument) {
         return new Document(
                 underlyingDocument.uriOption(),
                 underlyingDocument.children().stream()
                         .map(n -> {
                             if (n instanceof eu.cdevreeze.yaidom4j.dom.immutabledom.Element e) {
-                                return ElementTree.create(e).rootElement();
+                                return ElementTree.create(underlyingDocument.uriOption(), e).rootElement();
                             } else if (n instanceof eu.cdevreeze.yaidom4j.dom.immutabledom.Comment c) {
                                 return new Comment(c.value());
                             } else if (n instanceof eu.cdevreeze.yaidom4j.dom.immutabledom.ProcessingInstruction pi) {

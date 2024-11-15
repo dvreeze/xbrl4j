@@ -61,12 +61,10 @@ public class XPointerTests {
     @Test
     public void testIdPointerUse() {
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
-                .withUri(linkbaseUri);
+        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
-                .withUri(schemaUri);
+        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
@@ -108,12 +106,10 @@ public class XPointerTests {
     @Test
     public void testChildSequencePointerUse() {
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
-                .withUri(linkbaseUri);
+        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
-                .withUri(schemaUri);
+        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
@@ -154,12 +150,10 @@ public class XPointerTests {
     @Test
     public void testMultiplePointersUse() {
         URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri))
-                .withUri(linkbaseUri);
+        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
 
         URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri))
-                .withUri(schemaUri);
+        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
 
         SchemaContext schemaContext = SchemaContext.defaultInstance();
         XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);

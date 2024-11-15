@@ -22,6 +22,7 @@ import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
 
 import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -51,6 +52,11 @@ public abstract class XmlElementImpl implements XmlElement {
 
     public AncestryAwareElement<?> underlyingElement() {
         return underlyingElement;
+    }
+
+    @Override
+    public Optional<URI> docUriOption() {
+        return underlyingElement.docUriOption();
     }
 
     @Override

@@ -43,13 +43,15 @@ import java.util.function.BiFunction;
  */
 public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> extends AncestryAwareElementApi<E> {
 
+    Optional<URI> docUriOption();
+
     NamespaceScope namespaceScope();
 
     // xml:base (see XmlBaseResolver)
 
-    Optional<URI> findBaseUri(Optional<URI> docUriOption);
+    Optional<URI> findBaseUri();
 
-    Optional<URI> findBaseUri(Optional<URI> docUriOption, BiFunction<Optional<URI>, URI, URI> uriResolver);
+    Optional<URI> findBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver);
 
     // XPointer
 
