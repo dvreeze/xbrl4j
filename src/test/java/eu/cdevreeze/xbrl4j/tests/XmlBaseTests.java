@@ -50,7 +50,7 @@ public class XmlBaseTests {
     static {
         try {
             confSuiteRootDir =
-                    Objects.requireNonNull(XPointerTests.class.getResource(
+                    Objects.requireNonNull(XmlBaseTests.class.getResource(
                             "/conformancesuite/unzipped/XBRL-CONF-2014-12-10/")).toURI();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
