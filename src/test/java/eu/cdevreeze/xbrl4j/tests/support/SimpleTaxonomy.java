@@ -18,7 +18,9 @@ package eu.cdevreeze.xbrl4j.tests.support;
 
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
+import eu.cdevreeze.xbrl4j.model.internal.link.LinkbaseRefImpl;
 import eu.cdevreeze.xbrl4j.model.internal.link.LocImpl;
+import eu.cdevreeze.xbrl4j.model.link.LinkbaseRef;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 
 import java.net.URI;
@@ -34,10 +36,27 @@ public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
     public Optional<XmlElement> resolve(Loc loc) {
         URI uri = ((LocImpl) loc).underlyingElement().findBaseUri().orElseThrow().resolve(loc.xlinkHref());
+
         URI hrefWithoutFragment = withoutFragment(uri);
-        String fragment = uri.getFragment();
+        Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
+        // No XPointer processing
+
         return Optional.ofNullable(documents.get(hrefWithoutFragment))
-                .flatMap(d -> d.elementStream().filter(e -> e.idOption().stream().anyMatch(fragment::equals)).findFirst());
+                .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());
+    }
+
+    public Optional<XmlElement> resolve(LinkbaseRef linkbaseRef) {
+        URI uri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
+                .findBaseUri()
+                .orElseThrow()
+                .resolve(linkbaseRef.href());
+
+        URI hrefWithoutFragment = withoutFragment(uri);
+        Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
+        // No XPointer processing
+
+        return Optional.ofNullable(documents.get(hrefWithoutFragment))
+                .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());
     }
 
     private static URI withoutFragment(URI uri) {

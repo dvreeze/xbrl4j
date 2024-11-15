@@ -16,7 +16,10 @@
 
 package eu.cdevreeze.xbrl4j.tests;
 
+import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.common.dom.defaultimpl.Document;
+import eu.cdevreeze.xbrl4j.model.Names;
+import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
 import eu.cdevreeze.xbrl4j.model.factory.XmlElementFactory;
 import eu.cdevreeze.xbrl4j.model.internal.link.LinkbaseImpl;
@@ -27,6 +30,7 @@ import eu.cdevreeze.xbrl4j.model.link.LinkbaseRef;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ConceptDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
+import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomy;
 import eu.cdevreeze.yaidom4j.dom.immutabledom.jaxpinterop.DocumentParsers;
 import org.junit.jupiter.api.Test;
 
@@ -116,5 +120,50 @@ public class XmlBaseTests {
                         e -> e.idOption().filter(v -> v.equals("fixedAssets")).isPresent()
                 ).findFirst().isPresent()
         );
+    }
+
+    @Test
+    public void testLinkbaseRefXmlBaseAgain() throws URISyntaxException {
+        URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/201-03-LinkbaseRefXMLBase.xsd");
+        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
+
+        URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/base/201-03-LinkbaseRefXMLBase-label.xml");
+        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
+
+        SchemaContext schemaContext = SchemaContext.defaultInstance();
+        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
+
+        Schema schema = elementFactory.optionallyCreateSchema(
+                schemaDoc.documentElement()).orElseThrow();
+        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
+                linkbaseDoc.documentElement()).orElseThrow();
+
+        Optional<LinkbaseRef> linkbaseRefOption =
+                schema.descendantElementStream(LinkbaseRef.class).findFirst();
+
+        assertTrue(linkbaseRefOption.isPresent());
+        LinkbaseRef linkbaseRef = linkbaseRefOption.get();
+
+        SimpleTaxonomy taxo = new SimpleTaxonomy(ImmutableMap.of(
+                schemaUri, schema,
+                linkbaseUri, linkbase
+        ));
+
+        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        assertTrue(linkbaseOption.isPresent());
+        assertEquals(Names.LINK_LINKBASE_QNAME, linkbaseOption.map(XmlElement::elementName).orElseThrow());
+
+        Linkbase linkbase2 = (Linkbase) linkbaseOption.orElseThrow();
+
+        assertEquals(linkbase.elementStream().count(), linkbase2.elementStream().count());
+
+        Loc firstLocator =
+                linkbase.elementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa"))
+                        .findFirst()
+                        .orElseThrow();
+
+        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+
+        assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
     }
 }
