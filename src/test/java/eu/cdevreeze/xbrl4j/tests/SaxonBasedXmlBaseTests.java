@@ -55,7 +55,7 @@ public class SaxonBasedXmlBaseTests {
     static {
         try {
             confSuiteRootDir =
-                    Objects.requireNonNull(XPointerTests.class.getResource(
+                    Objects.requireNonNull(SaxonBasedXPointerTests.class.getResource(
                             "/conformancesuite/unzipped/XBRL-CONF-2014-12-10/")).toURI();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
