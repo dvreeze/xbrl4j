@@ -28,17 +28,20 @@ import java.util.function.BiFunction;
 /**
  * Ancestry-aware element API with extra knowledge about xml:base and XPointer.
  * These elements are used as underlying elements of the XBRL model.
- * They can even be used with wildcards for the self type, without having to know the exact self type.
  * <p>
- * The extra element wrapping layer does increase memory footprint. On the other hand, as opposed to
- * plain "AncestryAwareElement", it offers xml:base support and XPointer support for "underlying"
- * elements without any knowledge of the exact element type.
+ * The idea is that the XBRL model is implemented (as type hierarchy under "XmlElement", which itself
+ * extends yaidom4j interface "ElementApi") as a wrapper around any underlying element type that implements
+ * this "AncestryAwareElement" interface. In order not to leak the self type as type variable to the
+ * implementation of "XmlElement" (and subtypes), the underlying element is stored as a "AncestryAwareElement" with
+ * a wildcard for its self type. In order to make that work without needing any knowledge about specific
+ * implementations of "AncestryAwareElement", we indeed need type "AncestryAwareElement" instead of
+ * its supertype "AncestryAwareElementApi". The latter type is not aware of xml:base and XPointer,
+ * whereas this type "AncestryAwareElement" is. Hence, this subtype of "AncestryAwareElementApi" was
+ * introduced.
  *
  * @author Chris de Vreeze
  */
 public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> extends AncestryAwareElementApi<E> {
-
-    AncestryAwareElementApi<?> underlyingElement();
 
     NamespaceScope namespaceScope();
 
