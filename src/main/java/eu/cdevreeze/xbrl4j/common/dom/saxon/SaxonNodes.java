@@ -263,7 +263,7 @@ public class SaxonNodes {
 
         @Override
         public Optional<URI> baseUriOption() {
-            return new XmlBaseResolver().findBaseUri(this, docUriOption());
+            return Optional.of(xdmNode.getBaseURI());
         }
 
         @Override
