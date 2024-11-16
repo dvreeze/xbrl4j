@@ -16,7 +16,6 @@
 
 package eu.cdevreeze.xbrl4j.tests;
 
-import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.common.dom.defaultimpl.Document;
 import eu.cdevreeze.xbrl4j.model.Names;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
@@ -31,13 +30,13 @@ import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ConceptDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomy;
+import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomyFactory;
 import eu.cdevreeze.yaidom4j.dom.immutabledom.jaxpinterop.DocumentParsers;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -333,30 +332,7 @@ public class XmlBaseTests {
     }
 
     private SimpleTaxonomy createSimpleTaxonomy(List<String> relativeUris) {
-        SchemaContext schemaContext = SchemaContext.defaultInstance();
-        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
-
-        List<URI> taxoDocUris = relativeUris.stream().map(confSuiteRootDir::resolve).toList();
-
-        List<Map.Entry<URI, ? extends XmlElement>> uriDocPairs =
-                taxoDocUris.stream()
-                        .map(u -> {
-                            Document doc = Document.from(DocumentParsers.instance().parse(u).withUri(u));
-                            return Map.entry(u, doc);
-                        })
-                        .map(kv -> {
-                            if (kv.getKey().getSchemeSpecificPart().endsWith(".xsd")) {
-                                Schema schema = elementFactory.optionallyCreateSchema(
-                                        kv.getValue().documentElement()).orElseThrow();
-                                return Map.entry(kv.getKey(), schema);
-                            } else {
-                                Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
-                                        kv.getValue().documentElement()).orElseThrow();
-                                return Map.entry(kv.getKey(), linkbase);
-                            }
-                        })
-                        .toList();
-
-        return new SimpleTaxonomy(ImmutableMap.copyOf(uriDocPairs));
+        var taxoFactory = new SimpleTaxonomyFactory(confSuiteRootDir);
+        return taxoFactory.createSimpleTaxonomy(relativeUris);
     }
 }

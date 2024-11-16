@@ -17,31 +17,23 @@
 package eu.cdevreeze.xbrl4j.tests;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.xbrl4j.common.dom.saxon.SaxonDocument;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
-import eu.cdevreeze.xbrl4j.model.factory.SchemaContext;
-import eu.cdevreeze.xbrl4j.model.factory.XmlElementFactory;
 import eu.cdevreeze.xbrl4j.model.internal.xs.SchemaImpl;
 import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
 import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomy;
+import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomyFactoryUsingSaxon;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
-import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmNode;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.transform.stream.StreamSource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -184,40 +176,7 @@ public class SaxonBasedXPointerTests {
     }
 
     private SimpleTaxonomy createSimpleTaxonomy(List<String> relativeUris) {
-        DocumentBuilder docBuilder = processor.newDocumentBuilder();
-
-        SchemaContext schemaContext = SchemaContext.defaultInstance();
-        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
-
-        List<URI> taxoDocUris = relativeUris.stream().map(confSuiteRootDir::resolve).toList();
-
-        List<Map.Entry<URI, ? extends XmlElement>> uriDocPairs =
-                taxoDocUris.stream()
-                        .map(u -> {
-                            SaxonDocument doc = new SaxonDocument(build(u, docBuilder)).withUri(u);
-                            return Map.entry(u, doc);
-                        })
-                        .map(kv -> {
-                            if (kv.getKey().getSchemeSpecificPart().endsWith(".xsd")) {
-                                Schema schema = elementFactory.optionallyCreateSchema(
-                                        kv.getValue().documentElement()).orElseThrow();
-                                return Map.entry(kv.getKey(), schema);
-                            } else {
-                                Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
-                                        kv.getValue().documentElement()).orElseThrow();
-                                return Map.entry(kv.getKey(), linkbase);
-                            }
-                        })
-                        .toList();
-
-        return new SimpleTaxonomy(ImmutableMap.copyOf(uriDocPairs));
-    }
-
-    private XdmNode build(URI uri, DocumentBuilder docBuilder) {
-        try {
-            return docBuilder.build(new StreamSource(uri.toString()));
-        } catch (SaxonApiException e) {
-            throw new RuntimeException(e);
-        }
+        var taxoFactory = new SimpleTaxonomyFactoryUsingSaxon(processor, confSuiteRootDir);
+        return taxoFactory.createSimpleTaxonomy(relativeUris);
     }
 }
