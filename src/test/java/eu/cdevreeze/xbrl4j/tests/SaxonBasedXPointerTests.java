@@ -175,6 +175,33 @@ public class SaxonBasedXPointerTests {
         assertEquals(Optional.of("aaa"), itemDeclaration.nameOption());
     }
 
+    @Test
+    public void testMultiplePointersUseAgain() {
+        SimpleTaxonomy taxo = createSimpleTaxonomy(List.of(
+                "Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample-label.xml",
+                "Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample.xsd"
+        ));
+
+        Linkbase linkbase = taxo.linkbases().get(0);
+
+        Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class).findFirst();
+
+        assertTrue(locOption.isPresent());
+        Loc loc = locOption.get();
+
+        URI locUri = loc.xlinkHref();
+
+        assertEquals("element(/1/17)element(/1/3)", locUri.getFragment());
+
+        Optional<XmlElement> foundElementOption = taxo.resolve(loc);
+
+        assertTrue(foundElementOption.isPresent());
+        assertInstanceOf(ItemDeclaration.class, foundElementOption.get());
+
+        ItemDeclaration itemDeclaration = (ItemDeclaration) foundElementOption.get();
+        assertEquals(Optional.of("aaa"), itemDeclaration.nameOption());
+    }
+
     private SimpleTaxonomy createSimpleTaxonomy(List<String> relativeUris) {
         var taxoFactory = new SimpleTaxonomyFactoryUsingSaxon(processor, confSuiteRootDir);
         return taxoFactory.createSimpleTaxonomy(relativeUris);

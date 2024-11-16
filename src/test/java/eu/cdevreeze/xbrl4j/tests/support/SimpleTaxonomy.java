@@ -18,6 +18,8 @@ package eu.cdevreeze.xbrl4j.tests.support;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
+import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.link.LinkbaseRefImpl;
 import eu.cdevreeze.xbrl4j.model.internal.link.LocImpl;
@@ -58,6 +60,45 @@ public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
         return Optional.ofNullable(documents.get(hrefWithoutFragment))
                 .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());
+    }
+
+    public Optional<XmlElement> resolve(Loc loc) {
+        URI uri = ((LocImpl) loc).underlyingElement().baseUriOption().orElseThrow().resolve(loc.xlinkHref());
+
+        URI hrefWithoutFragment = withoutFragment(uri);
+        Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
+        Optional<ImmutableList<XPointer>> xpointersOption =
+                fragmentOption.map(XPointers::parseXPointers);
+
+        return Optional.ofNullable(documents.get(hrefWithoutFragment))
+                .flatMap(d -> {
+                    if (xpointersOption.isEmpty()) {
+                        return Optional.of(d);
+                    } else {
+                        return XPointers.findElement(d, xpointersOption.orElseThrow());
+                    }
+                });
+    }
+
+    public Optional<XmlElement> resolve(LinkbaseRef linkbaseRef) {
+        URI uri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
+                .baseUriOption()
+                .orElseThrow()
+                .resolve(linkbaseRef.href());
+
+        URI hrefWithoutFragment = withoutFragment(uri);
+        Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
+        Optional<ImmutableList<XPointer>> xpointersOption =
+                fragmentOption.map(XPointers::parseXPointers);
+
+        return Optional.ofNullable(documents.get(hrefWithoutFragment))
+                .flatMap(d -> {
+                    if (xpointersOption.isEmpty()) {
+                        return Optional.of(d);
+                    } else {
+                        return XPointers.findElement(d, xpointersOption.orElseThrow());
+                    }
+                });
     }
 
     public ImmutableList<XmlElement> rootElements() {
