@@ -340,6 +340,40 @@ public class SaxonBasedXmlBaseTests {
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
     }
 
+    @Test
+    public void testXmlBaseProcessingAlternativeFAgain() {
+        SimpleTaxonomy taxo = createSimpleTaxonomy(List.of(
+                "Common/200-linkbase/base/base/202-03f-HrefResolutionXMLBase.xsd",
+                "Common/200-linkbase/202-03f-HrefResolutionXMLBase-label.xml"
+        ));
+
+        Schema schema = taxo.schemas().get(0);
+        Linkbase linkbase = taxo.linkbases().get(0);
+
+        LinkbaseRef linkbaseRef =
+                schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
+
+        // Using method resolve instead of resolveWithoutXPointer (result is the same in this case)
+        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        assertTrue(linkbaseOption.isPresent());
+
+        assertEquals(
+                ((LinkbaseImpl) linkbase).underlyingElement().toClarkElement(),
+                ((LinkbaseImpl) linkbaseOption.orElseThrow()).underlyingElement().toClarkElement()
+        );
+
+        Loc firstLocator =
+                linkbase.elementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa"))
+                        .findFirst()
+                        .orElseThrow();
+
+        // Using method resolve instead of resolveWithoutXPointer (result is the same in this case)
+        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+
+        assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
+        assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
+    }
+
     private SimpleTaxonomy createSimpleTaxonomy(List<String> relativeUris) {
         var taxoFactory = new SimpleTaxonomyFactoryUsingSaxon(processor, confSuiteRootDir);
         return taxoFactory.createSimpleTaxonomy(relativeUris);
