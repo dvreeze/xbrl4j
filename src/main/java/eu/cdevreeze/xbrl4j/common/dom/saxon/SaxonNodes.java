@@ -263,7 +263,7 @@ public class SaxonNodes {
 
         @Override
         public Optional<URI> baseUriOption() {
-            return Optional.of(xdmNode.getBaseURI());
+            return Optional.ofNullable(xdmNode.getBaseURI());
         }
 
         @Override
