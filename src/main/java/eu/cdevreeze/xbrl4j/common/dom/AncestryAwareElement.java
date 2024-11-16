@@ -52,7 +52,12 @@ public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> exte
 
     Optional<URI> baseUriOption();
 
-    Optional<URI> findBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver);
+    /**
+     * Computes the optional base URI of this element. This method takes as argument a function
+     * implementing resolution of a URI against a base URI. This BiFunction takes an optional base URI
+     * as first argument and a URI to resolve against it as second argument, and returns the resolution result.
+     */
+    Optional<URI> computeOptionalBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver);
 
     // XPointer
 

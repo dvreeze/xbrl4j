@@ -110,7 +110,7 @@ public final class ElementTree {
         }
 
         @Override
-        public Optional<URI> findBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver) {
+        public Optional<URI> computeOptionalBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver) {
             return new XmlBaseResolver(uriResolver).findBaseUri(this, docUriOption);
         }
 
