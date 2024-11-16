@@ -155,7 +155,10 @@ public class XmlBaseTests {
 
         Linkbase linkbase2 = (Linkbase) linkbaseOption.orElseThrow();
 
-        assertEquals(linkbase.elementStream().count(), linkbase2.elementStream().count());
+        assertEquals(
+                ((LinkbaseImpl) linkbase).underlyingElement().toClarkElement(),
+                ((LinkbaseImpl) linkbase2).underlyingElement().toClarkElement()
+        );
 
         Loc firstLocator =
                 linkbase.elementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa"))

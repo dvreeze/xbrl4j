@@ -19,6 +19,7 @@ package eu.cdevreeze.xbrl4j.common.dom;
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
+import eu.cdevreeze.yaidom4j.dom.clark.ClarkNodes;
 import eu.cdevreeze.yaidom4j.queryapi.AncestryAwareElementApi;
 
 import java.net.URI;
@@ -58,4 +59,6 @@ public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> exte
     Optional<E> findElement(ImmutableList<XPointer> xpointers);
 
     Optional<E> findElement(XPointer xpointer);
+
+    ClarkNodes.Element toClarkElement();
 }

@@ -102,6 +102,11 @@ public class SaxonNodes {
         }
 
         @Override
+        public ClarkNodes.Element toClarkElement() {
+            return toClarkNode();
+        }
+
+        @Override
         public Optional<URI> docUriOption() {
             return Optional.ofNullable(xdmNode.getUnderlyingNode().getSystemId()).map(URI::create);
         }

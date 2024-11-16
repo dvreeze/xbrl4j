@@ -23,6 +23,7 @@ import eu.cdevreeze.xbrl4j.common.xmlbase.XmlBaseResolver;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
 import eu.cdevreeze.yaidom4j.core.NamespaceScope;
+import eu.cdevreeze.yaidom4j.dom.clark.ClarkNodes;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
@@ -94,6 +95,11 @@ public final class ElementTree {
         @Override
         public NamespaceScope namespaceScope() {
             return namespaceScopeOption().orElseThrow();
+        }
+
+        @Override
+        public ClarkNodes.Element toClarkElement() {
+            return underlyingElement().toClarkNode();
         }
 
         // Note that now we do not have a wildcard that cannot be captured in XmlBaseResolver
