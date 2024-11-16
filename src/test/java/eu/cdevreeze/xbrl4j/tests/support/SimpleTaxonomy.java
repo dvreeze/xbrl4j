@@ -16,12 +16,15 @@
 
 package eu.cdevreeze.xbrl4j.tests.support;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.model.XmlElement;
 import eu.cdevreeze.xbrl4j.model.internal.link.LinkbaseRefImpl;
 import eu.cdevreeze.xbrl4j.model.internal.link.LocImpl;
+import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.LinkbaseRef;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
+import eu.cdevreeze.xbrl4j.model.xs.Schema;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,6 +60,26 @@ public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
         return Optional.ofNullable(documents.get(hrefWithoutFragment))
                 .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());
+    }
+
+    public ImmutableList<XmlElement> rootElements() {
+        return documents.values().stream().collect(ImmutableList.toImmutableList());
+    }
+
+    public ImmutableList<Schema> schemas() {
+        return rootElements()
+                .stream()
+                .filter(e -> e instanceof Schema)
+                .map(e -> (Schema) e)
+                .collect(ImmutableList.toImmutableList());
+    }
+
+    public ImmutableList<Linkbase> linkbases() {
+        return rootElements()
+                .stream()
+                .filter(e -> e instanceof Linkbase)
+                .map(e -> (Linkbase) e)
+                .collect(ImmutableList.toImmutableList());
     }
 
     private static URI withoutFragment(URI uri) {
