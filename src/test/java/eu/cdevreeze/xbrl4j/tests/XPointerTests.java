@@ -17,6 +17,7 @@
 package eu.cdevreeze.xbrl4j.tests;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.xbrl4j.common.dom.defaultimpl.Document;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointer;
 import eu.cdevreeze.xbrl4j.common.xpointer.XPointers;
@@ -28,12 +29,15 @@ import eu.cdevreeze.xbrl4j.model.link.Linkbase;
 import eu.cdevreeze.xbrl4j.model.link.Loc;
 import eu.cdevreeze.xbrl4j.model.xs.ItemDeclaration;
 import eu.cdevreeze.xbrl4j.model.xs.Schema;
+import eu.cdevreeze.xbrl4j.tests.support.SimpleTaxonomy;
 import eu.cdevreeze.yaidom4j.dom.immutabledom.jaxpinterop.DocumentParsers;
 import eu.cdevreeze.yaidom4j.queryapi.ElementApi;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -60,19 +64,13 @@ public class XPointerTests {
 
     @Test
     public void testIdPointerUse() {
-        URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
+        SimpleTaxonomy taxo = createSimpleTaxonomy(List.of(
+                "Common/200-linkbase/202-05-ElementLocatorExample-label.xml",
+                "Common/200-linkbase/202-05-ElementLocatorExample.xsd"
+        ));
 
-        URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-05-ElementLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
-
-        SchemaContext schemaContext = SchemaContext.defaultInstance();
-        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
-
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
-                linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(
-                schemaDoc.documentElement()).orElseThrow();
+        Schema schema = taxo.schemas().get(0);
+        Linkbase linkbase = taxo.linkbases().get(0);
 
         Optional<Loc> locOption =
                 linkbase.descendantElementStream(Loc.class, loc -> loc.xlinkLabel().equals("aaa2")).findFirst();
@@ -87,7 +85,7 @@ public class XPointerTests {
         XPointer xpointer = XPointers.parseXPointer(locUri.getFragment());
 
         assertEquals("202-05-ElementLocatorExample.xsd", locUri.getSchemeSpecificPart());
-        assertEquals(schemaDoc.uriOption().orElseThrow(), linkbaseUri.resolve(locUri.getSchemeSpecificPart()));
+        assertEquals(schema.docUriOption().orElseThrow(), linkbase.docUriOption().orElseThrow().resolve(locUri.getSchemeSpecificPart()));
 
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
@@ -105,19 +103,13 @@ public class XPointerTests {
 
     @Test
     public void testChildSequencePointerUse() {
-        URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
+        SimpleTaxonomy taxo = createSimpleTaxonomy(List.of(
+                "Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample-label.xml",
+                "Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample.xsd"
+        ));
 
-        URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-09-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
-
-        SchemaContext schemaContext = SchemaContext.defaultInstance();
-        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
-
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
-                linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(
-                schemaDoc.documentElement()).orElseThrow();
+        Schema schema = taxo.schemas().get(0);
+        Linkbase linkbase = taxo.linkbases().get(0);
 
         Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class).findFirst();
 
@@ -131,7 +123,7 @@ public class XPointerTests {
         XPointer xpointer = XPointers.parseXPointer(locUri.getFragment());
 
         assertEquals("202-09-ElementSchemeXPointerLocatorExample.xsd", locUri.getSchemeSpecificPart());
-        assertEquals(schemaDoc.uriOption().orElseThrow(), linkbaseUri.resolve(locUri.getSchemeSpecificPart()));
+        assertEquals(schema.docUriOption().orElseThrow(), linkbase.docUriOption().orElseThrow().resolve(locUri.getSchemeSpecificPart()));
 
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointer);
 
@@ -149,19 +141,13 @@ public class XPointerTests {
 
     @Test
     public void testMultiplePointersUse() {
-        URI linkbaseUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample-label.xml");
-        Document linkbaseDoc = Document.from(DocumentParsers.instance().parse(linkbaseUri).withUri(linkbaseUri));
+        SimpleTaxonomy taxo = createSimpleTaxonomy(List.of(
+                "Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample-label.xml",
+                "Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample.xsd"
+        ));
 
-        URI schemaUri = confSuiteRootDir.resolve("Common/200-linkbase/202-10-ElementSchemeXPointerLocatorExample.xsd");
-        Document schemaDoc = Document.from(DocumentParsers.instance().parse(schemaUri).withUri(schemaUri));
-
-        SchemaContext schemaContext = SchemaContext.defaultInstance();
-        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
-
-        Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
-                linkbaseDoc.documentElement()).orElseThrow();
-        Schema schema = elementFactory.optionallyCreateSchema(
-                schemaDoc.documentElement()).orElseThrow();
+        Schema schema = taxo.schemas().get(0);
+        Linkbase linkbase = taxo.linkbases().get(0);
 
         Optional<Loc> locOption = linkbase.descendantElementStream(Loc.class).findFirst();
 
@@ -175,7 +161,7 @@ public class XPointerTests {
         ImmutableList<XPointer> xpointers = XPointers.parseElementSchemePointers(locUri.getFragment());
 
         assertEquals("202-10-ElementSchemeXPointerLocatorExample.xsd", locUri.getSchemeSpecificPart());
-        assertEquals(schemaDoc.uriOption().orElseThrow(), linkbaseUri.resolve(locUri.getSchemeSpecificPart()));
+        assertEquals(schema.docUriOption().orElseThrow(), linkbase.docUriOption().orElseThrow().resolve(locUri.getSchemeSpecificPart()));
 
         Optional<XmlElement> foundElementOption = XPointers.findElement(schema, xpointers);
 
@@ -189,5 +175,33 @@ public class XPointerTests {
 
         ItemDeclaration itemDeclaration = (ItemDeclaration) foundElementOption.get();
         assertEquals(Optional.of("aaa"), itemDeclaration.nameOption());
+    }
+
+    private SimpleTaxonomy createSimpleTaxonomy(List<String> relativeUris) {
+        SchemaContext schemaContext = SchemaContext.defaultInstance();
+        XmlElementFactory elementFactory = new XmlElementFactory(schemaContext);
+
+        List<URI> taxoDocUris = relativeUris.stream().map(confSuiteRootDir::resolve).toList();
+
+        List<Map.Entry<URI, ? extends XmlElement>> uriDocPairs =
+                taxoDocUris.stream()
+                        .map(u -> {
+                            Document doc = Document.from(DocumentParsers.instance().parse(u).withUri(u));
+                            return Map.entry(u, doc);
+                        })
+                        .map(kv -> {
+                            if (kv.getKey().getSchemeSpecificPart().endsWith(".xsd")) {
+                                Schema schema = elementFactory.optionallyCreateSchema(
+                                        kv.getValue().documentElement()).orElseThrow();
+                                return Map.entry(kv.getKey(), schema);
+                            } else {
+                                Linkbase linkbase = elementFactory.optionallyCreateLinkbase(
+                                        kv.getValue().documentElement()).orElseThrow();
+                                return Map.entry(kv.getKey(), linkbase);
+                            }
+                        })
+                        .toList();
+
+        return new SimpleTaxonomy(ImmutableMap.copyOf(uriDocPairs));
     }
 }
