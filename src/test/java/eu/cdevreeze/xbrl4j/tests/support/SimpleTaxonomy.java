@@ -37,18 +37,17 @@ import java.util.Optional;
  */
 public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
-    public Optional<XmlElement> resolve(Loc loc) {
+    public Optional<XmlElement> resolveWithoutXPointer(Loc loc) {
         URI uri = ((LocImpl) loc).underlyingElement().baseUriOption().orElseThrow().resolve(loc.xlinkHref());
 
         URI hrefWithoutFragment = withoutFragment(uri);
         Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
-        // No XPointer processing
 
         return Optional.ofNullable(documents.get(hrefWithoutFragment))
                 .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());
     }
 
-    public Optional<XmlElement> resolve(LinkbaseRef linkbaseRef) {
+    public Optional<XmlElement> resolveWithoutXPointer(LinkbaseRef linkbaseRef) {
         URI uri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
                 .baseUriOption()
                 .orElseThrow()
@@ -56,7 +55,6 @@ public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
         URI hrefWithoutFragment = withoutFragment(uri);
         Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
-        // No XPointer processing
 
         return Optional.ofNullable(documents.get(hrefWithoutFragment))
                 .flatMap(d -> d.elementStream().filter(e -> e.idOption().equals(fragmentOption)).findFirst());

@@ -137,7 +137,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -150,7 +150,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
     }
@@ -168,7 +168,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -181,7 +181,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
@@ -200,7 +200,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -213,7 +213,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
@@ -231,7 +231,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isEmpty());
     }
 
@@ -248,7 +248,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -261,7 +261,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
@@ -280,7 +280,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -293,7 +293,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
@@ -312,7 +312,7 @@ public class XmlBaseTests {
         LinkbaseRef linkbaseRef =
                 schema.descendantElementStream(LinkbaseRef.class).findFirst().orElseThrow();
 
-        Optional<XmlElement> linkbaseOption = taxo.resolve(linkbaseRef);
+        Optional<XmlElement> linkbaseOption = taxo.resolveWithoutXPointer(linkbaseRef);
         assertTrue(linkbaseOption.isPresent());
 
         assertEquals(
@@ -325,7 +325,7 @@ public class XmlBaseTests {
                         .findFirst()
                         .orElseThrow();
 
-        Optional<XmlElement> elementOption = taxo.resolve(firstLocator);
+        Optional<XmlElement> elementOption = taxo.resolveWithoutXPointer(firstLocator);
 
         assertEquals(Optional.of(Names.XS_ELEMENT_QNAME), elementOption.map(XmlElement::elementName));
         assertEquals(Optional.of("changeInRetainedEarnings"), elementOption.flatMap(e -> e.attributeOption(NAME_QNAME)));
