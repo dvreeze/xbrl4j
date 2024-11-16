@@ -50,7 +50,7 @@ public interface AncestryAwareElement<E extends AncestryAwareElementApi<E>> exte
 
     // xml:base (see XmlBaseResolver)
 
-    Optional<URI> findBaseUri();
+    Optional<URI> baseUriOption();
 
     Optional<URI> findBaseUri(BiFunction<Optional<URI>, URI, URI> uriResolver);
 

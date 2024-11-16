@@ -35,7 +35,7 @@ import java.util.Optional;
 public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
     public Optional<XmlElement> resolve(Loc loc) {
-        URI uri = ((LocImpl) loc).underlyingElement().findBaseUri().orElseThrow().resolve(loc.xlinkHref());
+        URI uri = ((LocImpl) loc).underlyingElement().baseUriOption().orElseThrow().resolve(loc.xlinkHref());
 
         URI hrefWithoutFragment = withoutFragment(uri);
         Optional<String> fragmentOption = Optional.ofNullable(uri.getFragment());
@@ -47,7 +47,7 @@ public record SimpleTaxonomy(ImmutableMap<URI, XmlElement> documents) {
 
     public Optional<XmlElement> resolve(LinkbaseRef linkbaseRef) {
         URI uri = ((LinkbaseRefImpl) linkbaseRef).underlyingElement()
-                .findBaseUri()
+                .baseUriOption()
                 .orElseThrow()
                 .resolve(linkbaseRef.href());
 
